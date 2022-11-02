@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+//var result = []UserRead{}
+
 func index(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("header.html", "index.html", "footer.html")
 	if err != nil {
@@ -53,10 +55,30 @@ func saveUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func userStatus(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("header.html", "userStatus.html", "footer.html")
+	if err != nil {
+		fmt.Println(w, err.Error())
+
+	}
+
+	db, err := sql.Open("mysql", pass)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	dw := DataRead{db: db}
+	id := r.FormValue("id")
+	result := dw.dbRead(id)
+	fmt.Println(result.FirstName, result.LastName, result.Phone)
+	t.ExecuteTemplate(w, "userStatus", result)
+}
+
 func handleFunc() {
 	http.Handle("/CSS/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/", index)
 	http.HandleFunc("/create", create)
 	http.HandleFunc("/saveUser", saveUser)
+	http.HandleFunc("/userStatus", userStatus)
 	http.ListenAndServe(":8080", nil)
 }

@@ -1,0 +1,48 @@
+{{ define "userStatus" }}
+{{ template "header" }}
+<div id="create">
+    <table>
+        <tbody>
+            <table>
+                <tbody>
+                    <form action="userStatus" method="get">
+
+                        <tr>
+                            <td><label>Введите номер квитанции</label></td>
+                            <td><input type="text" placeholder="номер квитанции" name="id" id="id"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button type="reset">сброс</button><button type="submit">отправить</button></td>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+</div><br><br><br>
+<div>
+    <table>
+        <tbody>
+            <form action="" method="get">
+                <tr>
+                    <td><label>Имя клиента</label></td>
+                    <td><label>{{ .LastName }}</label></td>
+                </tr>
+                <tr>
+                    <td><label>Фамилия клиента</label></td>
+                    <td><label>{{ .FirstName}}</label></td>
+                </tr>
+                <tr>
+                    <td><label>Номер телефона</label></td>
+                    <td><label>{{ .Phone}}</label></td>
+                </tr>
+               
+            </form>
+        </tbody>
+    </table>
+
+
+</div>
+{{ template "footer" }}
+
+{{ end }}

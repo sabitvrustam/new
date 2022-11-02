@@ -8,29 +8,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type UserRead struct {
-	firstName string
-	lastName  string
-	phone     string
-}
-
-type UserWrite struct {
-	firstName string
-	lastName  string
-	phone     string
-}
-
-type Equipment struct {
-	typeEquipment string
-	brand         string
-	model         string
-	sn            string
-}
-
-type DataWrite struct {
-	db *sql.DB
-}
-
 var dbuser string = os.Getenv("bduser")
 var dbpass string = os.Getenv("bdpass")
 var pass string = fmt.Sprintf("%s:%s@tcp(127.0.0.1)/my_service", dbuser, dbpass)
@@ -51,13 +28,31 @@ func dbRead(n int) (result string) {
 
 	for res.Next() {
 		var user UserRead
-		err = res.Scan(&user.firstName, &user.lastName, &user.phone)
+		err = res.Scan(&user.FirstName, &user.LastName, &user.Phone)
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
 		}
-		result = fmt.Sprintf("user: %s %s phone nomber %s", user.firstName, user.lastName, user.phone)
+		result = fmt.Sprintf("user: %s %s phone nomber %s", user.FirstName, user.LastName, user.Phone)
 	}
 	return
+}
+
+func (m DataRead) dbRead(id string) UserRead {
+
+	res, err := m.db.Query("select f_name, l_name, Phone from users where id = ?", id)
+	var re UserRead
+	if err != nil {
+		fmt.Sprintln(err)
+	}
+	for res.Next() {
+
+		err = res.Scan(&re.FirstName, &re.LastName, &re.Phone)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+	}
+	return re
 }
 
 func (m DataWrite) dbWrite(uw UserWrite, eq Equipment) error {
