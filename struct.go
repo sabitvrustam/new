@@ -2,23 +2,24 @@ package main
 
 import "database/sql"
 
-type UserRead struct {
+type User struct {
 	FirstName string
 	LastName  string
+	MidlName  string
 	Phone     string
 }
 
-type UserWrite struct {
-	firstName string
-	lastName  string
-	phone     string
+type Equipment struct {
+	TypeEquipment string
+	Brand         string
+	Model         string
+	Sn            string
 }
 
-type Equipment struct {
-	typeEquipment string
-	brand         string
-	model         string
-	sn            string
+type Id struct {
+	IdOrder  string
+	IdUser   string
+	IdBrands string
 }
 
 type DataWrite struct {

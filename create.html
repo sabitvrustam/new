@@ -1,48 +1,55 @@
 {{ define "create" }}
 {{ template "header" }}
 <div id="create">
-<table>
-    <tbody>
-        <form action="saveUser" method="get">
-            <tr>
-                <td><label>Имя клиента</label></td>
-                <td><input type="text" placeholder="Имя" maxlength="10" name="UserLastName" id="UserLastName">
-                </td>
-            </tr>
-            <tr>
-                <td><label>Фамилия клиента</label></td>
-                <td><input type="text" placeholder="Фамилия" maxlength="10" name="UserFirstName" id="UserFirstName">
-                </td>
-            </tr>
-            <tr>
-                <td><label>Номер телефона</label></td>
-                <td><input type="text" placeholder="Телефон" maxlength="11" name="PhoneNombe" id="PhoneNombe">
-                </td>
-            </tr>
-            <tr>
-                <td><label>Типа аппарата</label></td>
-                <td><input type="text" placeholder="Тип аппарата" name="TypeEquipment" id="TypeEquipment"></td>
-            </tr>
-            <tr>
-                <td><label>Фирма</label></td>
-                <td><input type="text" placeholder="Фирма" name="Brand" id="Brand"></td>
-            </tr>
-            <tr>
-                <td><label>Модель</label></td>
-                <td><input type="text" placeholder="Модель" name="Model" id="Model"></td>
-            </tr>
-            <tr>
-                <td><label>Серийный номер</label></td>
-                <td><input type="text" placeholder="Серийный номер" name="SN" id="SN"></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><button type="reset">сброс</button><button type="submit">сохранить</button></td>
-                </td>
-            </tr>
-        </form>
-    </tbody>
-</table>
+    <table>
+        <tbody>
+            <form action="saveUser" method="get">
+
+                <tr>
+                    <td><label>Фамилия клиента</label></td>
+                    <td><input type="text" placeholder="Фамилия" maxlength="10" name="UserFirstName" id="UserFirstName">
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Имя клиента</label></td>
+                    <td><input type="text" placeholder="Имя" maxlength="10" name="UserLastName" id="UserLastName">
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Отчество клиента</label></td>
+                    <td><input type="text" placeholder="Отчество" maxlength="10" name="UserMidlName" id="UserMidlName">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label>Номер телефона</label></td>
+                    <td><input type="text" placeholder="Телефон" maxlength="11" name="PhoneNombe" id="PhoneNombe">
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Типа аппарата</label></td>
+                    <td><input type="text" placeholder="Тип аппарата" name="TypeEquipment" id="TypeEquipment"></td>
+                </tr>
+                <tr>
+                    <td><label>Фирма</label></td>
+                    <td><input type="text" placeholder="Фирма" name="Brand" id="Brand"></td>
+                </tr>
+                <tr>
+                    <td><label>Модель</label></td>
+                    <td><input type="text" placeholder="Модель" name="Model" id="Model"></td>
+                </tr>
+                <tr>
+                    <td><label>Серийный номер</label></td>
+                    <td><input type="text" placeholder="Серийный номер" name="SN" id="SN"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button type="reset">сброс</button><button type="submit">сохранить</button></td>
+                    </td>
+                </tr>
+            </form>
+        </tbody>
+    </table>
 </div><br><br><br>
 {{ template "footer" }}
 

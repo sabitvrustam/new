@@ -25,19 +25,27 @@
         <tbody>
             <form action="" method="get">
                 <tr>
-                    <td><label>Имя клиента</label></td>
-                    <td><label>{{ .LastName }}</label></td>
+                    <td><label>Фамилия клиента</label></td>
+                    <td><input type="text" placeholder="Фамилия" maxlength="10" name="UserFirstName" id="UserFirstName" value="{{.FirstName}}"></td>
                 </tr>
                 <tr>
-                    <td><label>Фамилия клиента</label></td>
-                    <td><label>{{ .FirstName}}</label></td>
+                    <td><label>Имя клиента</label></td>
+                    <td><input type="text" placeholder="Имя" maxlength="10" name="UserFirstName" id="UserFirstName" value="{{.LastName}}"></td>
+                </tr>
+
+                <tr>
+                    <td><label>Отчество</label></td>
+                    <td><input type="text" placeholder="Отчество" maxlength="10" name="UserFirstName" id="UserFirstName" value="{{.MidlName}}"></td>
                 </tr>
                 <tr>
                     <td><label>Номер телефона</label></td>
-                    <td><label>{{ .Phone}}</label></td>
+                    <td><input type="text" placeholder="Телефон" maxlength="10" name="UserFirstName" id="UserFirstName" value="{{.Phone}}"></td>
                 </tr>
-               
-            </form>
+                <tr>
+                    <td><label>аппарат</label></td>
+                    <td><input type="text" placeholder="аппарат" maxlength="10" name="UserFirstName" id="UserFirstName" value="{{.Model}}"></td>
+                </tr>
+                          </form>
         </tbody>
     </table>
 

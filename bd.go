@@ -27,7 +27,7 @@ func dbRead(n int) (result string) {
 	}
 
 	for res.Next() {
-		var user UserRead
+		var user User
 		err = res.Scan(&user.FirstName, &user.LastName, &user.Phone)
 		if err != nil {
 			fmt.Println(err)
@@ -37,32 +37,58 @@ func dbRead(n int) (result string) {
 	return
 }
 
-func (m DataRead) dbRead(id string) UserRead {
+func (m DataRead) dbRead(id string) (User, Equipment) {
 
-	res, err := m.db.Query("select f_name, l_name, Phone from users where id = ?", id)
-	var re UserRead
+	res, err := m.db.Query("select id_users, id_brand from orders where id = ?", id)
+	var idOrder Id
 	if err != nil {
 		fmt.Sprintln(err)
 	}
 	for res.Next() {
 
-		err = res.Scan(&re.FirstName, &re.LastName, &re.Phone)
+		err = res.Scan(&idOrder.IdUser, &idOrder.IdBrands)
 		if err != nil {
 			fmt.Println(err)
 		}
 
 	}
-	return re
+	fmt.Println(idOrder.IdUser, idOrder.IdBrands)
+
+	res, err = m.db.Query("select f_name, l_name, m_name, Phone from users where id = ?", idOrder.IdUser)
+	var re User
+	if err != nil {
+		fmt.Sprintln(err)
+	}
+	for res.Next() {
+		err = res.Scan(&re.FirstName, &re.LastName, &re.MidlName, &re.Phone)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
+	res, err = m.db.Query("select type, brand, model, SN from brends where id = ?", idOrder.IdBrands)
+	var rd Equipment
+	if err != nil {
+		fmt.Sprintln(err)
+	}
+	for res.Next() {
+		err = res.Scan(&rd.TypeEquipment, &rd.Brand, &rd.Model, &rd.Sn)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+	return re, rd
+
 }
 
-func (m DataWrite) dbWrite(uw UserWrite, eq Equipment) error {
+func (m DataWrite) dbWrite(uw User, eq Equipment) error {
 
 	tx, err := m.db.Begin()
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := tx.Exec("INSERT INTO `users` (`f_name`, `l_name`, `Phone`) VALUE (?, ?, ?)", uw.firstName, uw.lastName, uw.phone)
+	result, err := tx.Exec("INSERT INTO `users` (`f_name`, `l_name`, `m_name`, `Phone`) VALUE (?, ?, ?, ?)", uw.FirstName, uw.LastName, uw.MidlName, uw.Phone)
 	if err != nil {
 		tx.Rollback()
 		panic(err)
@@ -75,7 +101,7 @@ func (m DataWrite) dbWrite(uw UserWrite, eq Equipment) error {
 	}
 	fmt.Println(id1)
 
-	result1, err := tx.Exec("INSERT INTO `brends` (`type`, `brand`, `model`, `SN`) VALUE (?, ?, ?, ?)", eq.typeEquipment, eq.brand, eq.model, eq.sn)
+	result1, err := tx.Exec("INSERT INTO `brends` (`type`, `brand`, `model`, `SN`) VALUE (?, ?, ?, ?)", eq.TypeEquipment, eq.Brand, eq.Model, eq.Sn)
 	if err != nil {
 		tx.Rollback()
 		panic(err)

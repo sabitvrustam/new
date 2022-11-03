@@ -31,6 +31,7 @@ func saveUser(w http.ResponseWriter, r *http.Request) {
 
 	userLastName := r.FormValue("UserLastName")
 	userFirstName := r.FormValue("UserFirstName")
+	userMidlName := r.FormValue("UserMidlName")
 	phoneNombe := r.FormValue("PhoneNombe")
 	typeEquipment := r.FormValue("TypeEquipment")
 	brand := r.FormValue("Brand")
@@ -44,8 +45,8 @@ func saveUser(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	dw := DataWrite{db: db}
-	uw := UserWrite{firstName: userFirstName, lastName: userLastName, phone: phoneNombe}
-	eq := Equipment{typeEquipment: typeEquipment, brand: brand, model: model, sn: sn}
+	uw := User{FirstName: userFirstName, LastName: userLastName, MidlName: userMidlName, Phone: phoneNombe}
+	eq := Equipment{TypeEquipment: typeEquipment, Brand: brand, Model: model, Sn: sn}
 	err = dw.dbWrite(uw, eq)
 	if err != nil {
 		fmt.Println(err)
@@ -69,9 +70,11 @@ func userStatus(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	dw := DataRead{db: db}
 	id := r.FormValue("id")
-	result := dw.dbRead(id)
+	result, trig := dw.dbRead(id)
 	fmt.Println(result.FirstName, result.LastName, result.Phone)
+	fmt.Println(trig.TypeEquipment, trig.Brand, trig.Model, trig.Sn)
 	t.ExecuteTemplate(w, "userStatus", result)
+
 }
 
 func handleFunc() {
