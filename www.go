@@ -1,33 +1,27 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"html/template"
 	"net/http"
 )
 
-//var result = []UserRead{}
-
 func index(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("header.html", "index.html", "footer.html")
 	if err != nil {
-		fmt.Println(w, err.Error())
-
+		fmt.Println(w, err.Error(), "не удалось открыть главную страничку")
 	}
 	t.ExecuteTemplate(w, "index", nil)
 }
-
 func create(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("create.html", "header.html", "footer.html")
+	t, err := template.ParseFiles("header.html", "create.html", "footer.html")
 	if err != nil {
-		fmt.Println(w, err.Error())
-
+		fmt.Println(w, err.Error(), "не удалось открыть страничку создания заказа")
 	}
-	t.ExecuteTemplate(w, "create", nil)
+	result := dbreadMasters()
+	t.ExecuteTemplate(w, "create", result)
 }
-
-func saveUser(w http.ResponseWriter, r *http.Request) {
+func newUser(w http.ResponseWriter, r *http.Request) {
 
 	userLastName := r.FormValue("UserLastName")
 	userFirstName := r.FormValue("UserFirstName")
@@ -37,51 +31,73 @@ func saveUser(w http.ResponseWriter, r *http.Request) {
 	brand := r.FormValue("Brand")
 	model := r.FormValue("Model")
 	sn := r.FormValue("SN")
+	defect := r.FormValue("defect")
+	master := r.FormValue("Id")
+	status := ("1")
 
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	dw := DataWrite{db: db}
-	uw := User{FirstName: userFirstName, LastName: userLastName, MidlName: userMidlName, Phone: phoneNombe}
-	eq := Equipment{TypeEquipment: typeEquipment, Brand: brand, Model: model, Sn: sn}
-	err = dw.dbWrite(uw, eq)
+	uw := Order{
+		Status: Status{
+			StatusOrder: status},
+		Masters: Masters{
+			Id: master},
+		User: User{
+			FirstName: userFirstName,
+			LastName:  userLastName,
+			MidlName:  userMidlName,
+			Phone:     phoneNombe},
+		Device: Device{
+			TypeEquipment: typeEquipment,
+			Brand:         brand,
+			Model:         model,
+			Sn:            sn,
+			Defect:        defect}}
+	err := dbWrite(uw)
 	if err != nil {
 		fmt.Println(err)
+	} else {
+		http.Redirect(w, r, "/index", http.StatusSeeOther)
 	}
-
-	http.Redirect(w, r, "/", http.StatusSeeOther)
-
 }
-
-func userStatus(w http.ResponseWriter, r *http.Request) {
+func userStatusPage(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("header.html", "userStatus.html", "footer.html")
 	if err != nil {
 		fmt.Println(w, err.Error())
-
 	}
-
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-	dw := DataRead{db: db}
 	id := r.FormValue("id")
-	result, trig := dw.dbRead(id)
-	fmt.Println(result.FirstName, result.LastName, result.Phone)
-	fmt.Println(trig.TypeEquipment, trig.Brand, trig.Model, trig.Sn)
+	var result Order
+	if id != "" {
+		result = dbRead(id)
+	}
 	t.ExecuteTemplate(w, "userStatus", result)
-
 }
-
+func makeChanges(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("header.html", "makeChanges.html", "footer.html")
+	if err != nil {
+		fmt.Println(w, err.Error(), "не удалось открыть страничку создания заказа")
+	}
+	var result Order
+	pas := dbreadParts()
+	result.OllParts = append(result.OllParts, pas.OllParts...)
+	id := r.FormValue("id")
+	if id != "" {
+		result = dbRead(id)
+	}
+	var partsVhang []string
+	err = r.ParseForm()
+	if err != nil {
+		fmt.Println("не удалось считать форму")
+	}
+	for _, i := range r.Form {
+		partsVhang = append(partsVhang, i...)
+	}
+	fmt.Println(partsVhang)
+	t.ExecuteTemplate(w, "makeChanges", result)
+}
 func handleFunc() {
-	http.Handle("/CSS/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/", index)
 	http.HandleFunc("/create", create)
-	http.HandleFunc("/saveUser", saveUser)
-	http.HandleFunc("/userStatus", userStatus)
+	http.HandleFunc("/newUser", newUser)
+	http.HandleFunc("/userStatus", userStatusPage)
+	http.HandleFunc("/makeChanges", makeChanges)
 	http.ListenAndServe(":8080", nil)
 }

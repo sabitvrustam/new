@@ -1,0 +1,120 @@
+{{ define "makeChanges" }}
+{{ template "header" }}
+<table>
+    <tbody>
+        <form action="makeChanges" method="get">
+
+            <tr>
+                <td><label>Введите номер квитанции</label></td>
+                <td><input type="text" placeholder="номер квитанции" name="id" id="id"></td>
+            </tr>
+            <tr></tr>
+            <tr>
+                <td></td>
+                <td><button type="reset">сброс</button><button type="submit">отправить</button></td>
+
+            </tr>
+        </form>
+        <form action="" method="get">
+            <tr>
+                <td><label>Номер квитанции</label></td>
+                <td><input type="text" placeholder="Квитанция" maxlength="10" name="UserFirstName" id="UserFirstName"
+                        value="{{.IdOrder}}" disabled></td>
+            </tr>
+            <tr>
+                <td><label>Фамилия клиента</label></td>
+                <td><input type="text" placeholder="Фамилия" maxlength="10" name="UserFirstName" id="UserFirstName"
+                        value="{{.FirstName}}" disabled></td>
+            </tr>
+            <tr>
+                <td><label>Имя клиента</label></td>
+                <td><input type="text" placeholder="Имя" maxlength="10" name="UserFirstName" id="UserFirstName"
+                        value="{{.LastName}}" disabled></td>
+            </tr>
+
+            <tr>
+                <td><label>Отчество</label></td>
+                <td><input type="text" placeholder="Отчество" maxlength="10" name="UserFirstName" id="UserFirstName"
+                        value="{{.MidlName}}" disabled></td>
+            </tr>
+            <tr>
+                <td><label>Номер телефона</label></td>
+                <td><input type="text" placeholder="Телефон" maxlength="10" name="UserFirstName" id="UserFirstName"
+                        value="{{.Phone}}" disabled></td>
+            </tr>
+            <tr>
+                <td><label>Аппарат</label></td>
+                <td><input type="text" placeholder="аппарат" maxlength="10" name="UserFirstName" id="UserFirstName"
+                        value="{{.TypeEquipment}}" disabled></td>
+            </tr>
+            <tr>
+                <td><label>Фирма</label></td>
+                <td><input type="text" placeholder="Фирма" maxlength="10" name="UserFirstName" id="UserFirstName"
+                        value="{{.Brand}}" disabled></td>
+            </tr>
+            <tr>
+                <td><label>Модель</label></td>
+                <td><input type="text" placeholder="Модель" maxlength="10" name="UserFirstName" id="UserFirstName"
+                        value="{{.Model}}" disabled></td>
+            </tr>
+            <tr>
+                <td><label> Серийный номер</label></td>
+                <td><input type="text" placeholder="Серийный номер" maxlength="10" name="UserFirstName"
+                        id="UserFirstName" value="{{.Sn}}" disabled></td>
+            </tr>
+            <tr>
+                <td><label>Назначенный мастер</label></td>
+                <td><input type="text" placeholder="Мастер" maxlength="10" name="UserFirstName" id="UserFirstName"
+                        value="{{.Masters.L_name}}" disabled></td>
+            </tr>
+            <tr>
+                <td><label>Статус ремонта</label></td>
+                <td><input type="text" placeholder="статус" maxlength="10" name="StatusOrder" id="StatusOrder"
+                        value="{{.StatusOrder}}" disabled></td>
+            </tr>
+        </form>
+    </tbody>
+</table>
+<button type="button" class="btn btn-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Запчасти
+</button>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Выберите Запчасти</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check"></div>
+                <form action="" method="post">
+                    <table>
+                        <tbody>
+                            {{ range .OllParts }}
+                            <tr>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" value="{{ .Id }}"
+                                        id="flexCheckDefault" name="hgfhg">
+                                    <label class="form-check-label" for="flexCheckDefault">{{ .PartsName }}</label>
+                                </td>
+                                <td>{{ .PartsPrice }}</td>
+                            </tr>
+                            {{ end }}
+                            <tr>
+                                <div class="btn-group">
+                                    <td><button class="btn btn-primary" type="reset">сброс</button></td>
+                                    <td><button class="btn btn-primary" type="submit">сохранить</button></td>
+                                </div>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ template "footer" }}
+
+{{ end }}

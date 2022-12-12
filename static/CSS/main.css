@@ -31,9 +31,24 @@
  
 }
 
+#statustable {
+background-color: #98b6dd;    
+}
 
 #create {
+    width: 500px;
+    height: 300px;
+    display: block;
     float: left;
+}
+#status {
+    width: 500px;
+    height: 300px;
+    display: block;
+    float: left;
+    text-align: center;
+    
+
 }
 
 #footer {
@@ -43,5 +58,8 @@
     height: 50px;
     display: block;
     float: left;
+    text-align: right;
+    color: aliceblue;
     margin-top: 100px;
+
 }

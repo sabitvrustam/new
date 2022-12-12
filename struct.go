@@ -1,6 +1,16 @@
 package main
 
-import "database/sql"
+type Order struct {
+	User
+	Device
+	Works []Work
+	Parts []Part
+	Id
+	Status
+	Masters
+	Price
+	OllParts []Part
+}
 
 type User struct {
 	FirstName string
@@ -9,11 +19,12 @@ type User struct {
 	Phone     string
 }
 
-type Equipment struct {
+type Device struct {
 	TypeEquipment string
 	Brand         string
 	Model         string
 	Sn            string
+	Defect        string
 }
 
 type Id struct {
@@ -22,10 +33,24 @@ type Id struct {
 	IdBrands string
 }
 
-type DataWrite struct {
-	db *sql.DB
+type Work struct {
+	WorkName  string
+	WorkPrice string
+}
+type Part struct {
+	Id         string
+	PartsName  string
+	PartsPrice string
+}
+type Status struct {
+	StatusOrder string
+}
+type Price struct {
+	PriceWork  string
+	PriceParts string
 }
 
-type DataRead struct {
-	db *sql.DB
+type Masters struct {
+	Id     string
+	L_name string
 }
