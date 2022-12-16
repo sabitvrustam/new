@@ -3,7 +3,7 @@
 <div id="create" class="form-group">
     <table>
         <tbody>
-            <form  action="newUser" method="get">
+            <form  action="newUser" method="post">
 
                 <tr>
                     <td><label>Фамилия клиента</label></td>
@@ -49,7 +49,7 @@
                 <tr>
                     <td><label>выберете мастера</label></td>
                                     
-                    <td><select name="Id" required="required">
+                    <td><select name="Id" >
                         <option value="">Выберите мастера
                         {{ range . }}
                         <option value="{{ .Id }}" label="{{ .L_name }}">

@@ -178,6 +178,22 @@ func dbreadParts() Order {
 
 	return result
 }
+func dbWriteParts(newPart Part) error {
+	db, err := sql.Open("mysql", pass)
+	if err != nil {
+		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Query("INSERT INTO `parts` (`parts_name`, `parts_price`) VALUE (?, ?)", newPart.PartsName, newPart.PartsPrice)
+	if err != nil {
+		fmt.Println("не удалось записать новую запчасть в базу данных", err)
+		return err
+	}
+
+	return err
+}
 
 // func dbreadStatus() []Status {
 // 	db, err := sql.Open("mysql", pass)

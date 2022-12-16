@@ -54,3 +54,7 @@ type Masters struct {
 	Id     string
 	L_name string
 }
+
+type APIHandler struct {
+	Id string
+}

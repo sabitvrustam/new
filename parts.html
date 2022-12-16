@@ -1,0 +1,44 @@
+{{ define "parts" }}
+{{ template "header" }}
+<div id="create" class="form-group">
+    <table>
+        <tbody>
+            <form  action="" method="post">
+                {{ range .OllParts }}
+                <tr>
+                    <td><label>{{ .Id }}</label></td>
+                    <td><label>{{ .PartsName }}</label></td>
+                    <td><label>{{ .PartsPrice }}</label></td>
+                </tr>
+               {{ end }} 
+
+            </form>
+            <form  action="newParts" method="post">
+                
+                <tr>
+                    <td><label>Название детали</label></td>
+                    <td><input type="text" required="required" placeholder="Название детали" maxlength="10" name="partsName" id="partsName">
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Цена детали</label></td>
+                    <td><input type="text" required="required" placeholder="Цена" maxlength="10" name="partsPrice" id="partsPrice">
+                    </td>
+                </tr>
+              
+                                
+                    <td></td>
+                    <td><button type="submit">сохранить</button></td>
+                    </td>
+                </tr>
+            </form>
+
+
+
+
+        </tbody>
+    </table>
+</div><br><br><br>
+{{ template "footer" }}
+
+{{ end }}

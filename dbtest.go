@@ -82,6 +82,17 @@ func dbTest() {
 		} else {
 			fmt.Println("таблица состояния заказа создана")
 		}
+		status := []string{"Принято", "На диагностике", "На соглосовании", "Отказ от ремонта", "Ждет запчасть", "В работе",
+			"Готов к выдаче", "Выдано"}
+		kol := len(status)
+		for i, statusName := range status {
+			_, err = db.Query("INSERT INTO `status` (`o_status`) VALUE (?)", statusName)
+			if err != nil {
+				fmt.Println(res, err, "не удалось записать статус ", i)
+			} else {
+				fmt.Println("Данные в таблицу статусов записаны, в колличестве", kol)
+			}
+		}
 		_, err = db.Query("CREATE TABLE `masters` ( " +
 			"`id` int NOT NULL AUTO_INCREMENT, " +
 			"`l_name` varchar(20) NOT NULL, " +
