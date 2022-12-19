@@ -120,20 +120,39 @@ func makeChangesParts(w http.ResponseWriter, r *http.Request) {
 
 }
 func savePartsOrder(w http.ResponseWriter, r *http.Request) {
-	id := r.FormValue("id")
 
 	err := r.ParseForm()
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	var saveParts []string
-	for _, i := range r.Form {
-		saveParts = append(saveParts, i...)
-
+	var id string
+	var partId Order
+	id = r.FormValue("id")
+	partId.IdOrder = id
+	for n, i := range r.Form {
+		if n == "id" {
+		} else {
+			for _, m := range i {
+				partId.Part.Id = m
+				dbWritePartsOrder(partId)
+			}
+		}
 	}
 	url := fmt.Sprintf("/makeChanges/%s", id)
-	fmt.Println(saveParts, id)
+
+	http.Redirect(w, r, url, http.StatusSeeOther)
+
+}
+func makeChangesDleleteParts(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	var part Order
+	part.IdOrder = vars["idOrder"]
+	part.Part.Id = vars["idPart"]
+	fmt.Println(part.IdOrder, part.Part.Id)
+
+	dbDeletePartsOrder(part)
+	url := fmt.Sprintf("/makeChanges/%s", part.IdOrder)
+
 	http.Redirect(w, r, url, http.StatusSeeOther)
 
 }
@@ -155,6 +174,25 @@ func newParts(w http.ResponseWriter, r *http.Request) {
 	dbWriteParts(newParts)
 	http.Redirect(w, r, "/parts", http.StatusSeeOther)
 }
+func works(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("header.html", "works.html", "footer.html")
+	if err != nil {
+		fmt.Println(w, err.Error())
+	}
+	result := dbreadParts()
+	t.ExecuteTemplate(w, "works", result)
+}
+func newWork(w http.ResponseWriter, r *http.Request) {
+	partsName := r.FormValue("partsName")
+	partsPrice := r.FormValue("partsPrice")
+	newParts := Part{
+		PartsName:  partsName,
+		PartsPrice: partsPrice,
+	}
+	dbWriteParts(newParts)
+	http.Redirect(w, r, "/parts", http.StatusSeeOther)
+}
+
 func handleFunc() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", index)
@@ -164,10 +202,13 @@ func handleFunc() {
 	r.HandleFunc("/makeChangesOrder", makeChangesOrder)
 	r.HandleFunc("/makeChanges/{id:[0-9]+}", makeChanges)
 	r.HandleFunc("/makeChangesParts/{id:[0-9]+}", makeChangesParts)
+	r.HandleFunc("/makeChangesDeleteParts/{idOrder:[0-9]+}/{idPart:[0-9]+}", makeChangesDleleteParts)
 	r.HandleFunc("/parts", parts)
+	r.HandleFunc("/works", works)
 	r.HandleFunc("/newParts", newParts)
+	r.HandleFunc("/newWork", newWork)
 	r.HandleFunc("/makeChangesParts/savePartsOrder", savePartsOrder)
 	http.Handle("/", r)
 	fmt.Println("Server is listening...")
-	http.ListenAndServe(":8181", nil)
+	http.ListenAndServe(":8080", nil)
 }

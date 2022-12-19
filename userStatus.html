@@ -1,129 +1,143 @@
 {{ define "userStatus" }}
 {{ template "header" }}
-<div id="create">
-    <table>
-        <tbody>
-            <form action="" method="get">
+<div class="container">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table>
+                <tbody>
+                    <form action="" method="get">
 
-                <tr>
-                    <td><label>Введите номер квитанции</label></td>
-                    <td><input type="text" placeholder="номер квитанции" name="id" id="id"></td>
-                </tr>
-                <tr></tr>
-                <tr>
-                    <td></td>
-                    <td><button  type="reset">сброс</button><button type="submit">отправить</button></td>
+                        <tr>
+                            <td><label>Hомер квитанции</label></td>
+                            <td><input type="text" placeholder="номер квитанции" name="id" id="id"></td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" type="reset">сброс</button>
+                                <button class="btn btn-primary btn-sm" type="submit">Поиск</button>
+                            </td>
 
-                </tr>
-            </form>
+                        </tr>
+                    </form>
 
-            <form action="" method="get">
-                <tr>
-                    <td><label>Номер квитанции</label></td>
-                    <td><input type="text" placeholder="Квитанция" maxlength="10" name="UserFirstName"
-                            id="UserFirstName" value="{{.IdOrder}}" disabled></td>
-                </tr>
-                <tr>
-                    <td><label>Фамилия клиента</label></td>
-                    <td><input type="text" placeholder="Фамилия" maxlength="10" name="UserFirstName" id="UserFirstName"
-                            value="{{.FirstName}}" disabled></td>
-                </tr>
-                <tr>
-                    <td><label>Имя клиента</label></td>
-                    <td><input type="text" placeholder="Имя" maxlength="10" name="UserFirstName" id="UserFirstName"
-                            value="{{.LastName}}" disabled></td>
-                </tr>
+                    <form action="" method="get">
+                        <tr>
+                            <td><label>Номер квитанции</label></td>
+                            <td><input type="text" placeholder="Квитанция" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.IdOrder}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фамилия клиента</label></td>
+                            <td><input type="text" placeholder="Фамилия" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.FirstName}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Имя клиента</label></td>
+                            <td><input type="text" placeholder="Имя" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.LastName}}" disabled></td>
+                        </tr>
 
-                <tr>
-                    <td><label>Отчество</label></td>
-                    <td><input type="text" placeholder="Отчество" maxlength="10" name="UserFirstName" id="UserFirstName"
-                            value="{{.MidlName}}" disabled></td>
-                </tr>
-                <tr>
-                    <td><label>Номер телефона</label></td>
-                    <td><input type="text" placeholder="Телефон" maxlength="10" name="UserFirstName" id="UserFirstName"
-                            value="{{.Phone}}" disabled></td>
-                </tr>
-                <tr>
-                    <td><label>Аппарат</label></td>
-                    <td><input type="text" placeholder="аппарат" maxlength="10" name="UserFirstName" id="UserFirstName"
-                            value="{{.TypeEquipment}}" disabled></td>
-                </tr>
-                <tr>
-                    <td><label>Фирма</label></td>
-                    <td><input type="text" placeholder="Фирма" maxlength="10" name="UserFirstName" id="UserFirstName"
-                            value="{{.Brand}}" disabled></td>
-                </tr>
-                <tr>
-                    <td><label>Модель</label></td>
-                    <td><input type="text" placeholder="Модель" maxlength="10" name="UserFirstName" id="UserFirstName"
-                            value="{{.Model}}" disabled></td>
-                </tr>
-                <tr>
-                    <td><label> Серийный номер</label></td>
-                    <td><input type="text" placeholder="Серийный номер" maxlength="10" name="UserFirstName"
-                            id="UserFirstName" value="{{.Sn}}" disabled></td>
-                </tr>
-                <tr>
-                    <td><label>Назначенный мастер</label></td>
-                    <td><input type="text" placeholder="Мастер" maxlength="10" name="UserFirstName" id="UserFirstName"
-                            value="{{.Masters.L_name}}" disabled></td>
-                </tr>
-                <tr>
-                    <td><label>Статус ремонта</label></td>
-                    <td><input type="text" placeholder="статус" maxlength="10" name="StatusOrder" id="StatusOrder"
-                            value="{{.StatusOrder}}" disabled></td>
+                        <tr>
+                            <td><label>Отчество</label></td>
+                            <td><input type="text" placeholder="Отчество" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.MidlName}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Номер телефона</label></td>
+                            <td><input type="text" placeholder="Телефон" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Phone}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Аппарат</label></td>
+                            <td><input type="text" placeholder="аппарат" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.TypeEquipment}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фирма</label></td>
+                            <td><input type="text" placeholder="Фирма" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Brand}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Модель</label></td>
+                            <td><input type="text" placeholder="Модель" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Model}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label> Серийный номер</label></td>
+                            <td><input type="text" placeholder="Серийный номер" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Sn}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Назначенный мастер</label></td>
+                            <td><input type="text" placeholder="Мастер" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Masters.L_name}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Статус ремонта</label></td>
+                            <td><input type="text" placeholder="статус" maxlength="10" name="StatusOrder"
+                                    id="StatusOrder" value="{{.StatusOrder}}" disabled></td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <form action="" method="get"></form>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Запчасти</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Цена</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Parts}}
+                    <tr>
+                        <td>{{ .PartsName }}</td>
+                        <td>{{ .PartsPrice }}</td>
+                    </tr>
+                    {{ end }}
+                    <tr>
+                        <th>Итого</th>
+                        <td>{{ .PriceParts }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <form action="" method="get"></form>
+            <table class="table">
+                <thead>
+                    <tr>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Работы</th>
+                    </tr>
+                    <th scope="col">Наименование</th>
+                    <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Works}}
+                    <tr>
+                        <td>{{ .WorkName }}</td>
+                        <td>{{ .WorkPrice }}</td>
+                    </tr>
+                    {{ end }}
+                    <tr>
+                        <td>итого</td>
+                        <td>{{ .PriceWork }}</td>
+                    </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-                </tr>
-            </form>
-        </tbody>
-    </table>
-</div>
-<div id="status">
-    <table border="1" id=statustable>
-        <tbody>
-            <form action="" method="get">
+    {{ template "footer" }}
 
-                <tr>
-                    <td><label><strong>Запчасти</strong></label></td>
-                </tr>
-                <tr>
-                    <td><label><strong>Наименование</strong></label></td>
-                    <td><label><strong>Стоимость</strong></label></td>
-                </tr>
-                {{ range .Works}}
-                <tr>
-                    <td>{{ .WorkName }}</td>
-                    <td>{{ .WorkPrice }}</td>
-                </tr>
-                {{ end }}
-                <tr>
-                    <td>итого</td>
-                    <td>{{ .PriceWork }}</td>
-                </tr>
-                <tr>
-                    <td><label><strong>Работа</strong></label></td>
-                </tr>
-                <tr>
-                    <td><label><strong>Наименование</strong></label></td>
-                    <td><label><strong>Стоимость</strong></label></td>
-                </tr>
-                {{ range .Parts}}
-                <tr>
-                    <td>{{ .PartsName }}</td>
-                    <td>{{ .PartsPrice }}</td>
-                </tr>
-                {{ end }}
-                <tr>
-                    <td>итого</td>
-                    <td>{{ .PriceParts }}</td>
-                </tr>
-
-
-            </form>
-        </tbody>
-    </table>
-</div>
-{{ template "footer" }}
-
-{{ end }}
+    {{ end }}

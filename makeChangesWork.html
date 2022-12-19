@@ -1,4 +1,4 @@
-{{ define "makechangesparts" }}
+{{ define "makeChangesWork" }}
 {{ template "header" }}
 <div class="container">
     <div class="row row-cols-auto">
@@ -16,7 +16,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{ range .OllParts }}
+                        {{ range .OllWorks }}
                         <tr>
                             <td><input class="form-check-input" type="checkbox" value="{{ .Id }}" id="flexCheckDefault"
                                     name="hgfhg"></td>

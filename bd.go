@@ -50,7 +50,7 @@ func dbRead(id string) Order {
 			fmt.Println(err)
 		}
 	}
-	res, err = db.Query("SELECT p.parts_name , p.parts_price  FROM orders AS o "+
+	res, err = db.Query("SELECT op.id_parts, p.parts_name , p.parts_price  FROM orders AS o "+
 		"JOIN orders_parts AS op ON o.id = op.id_orders "+
 		"JOIN parts AS p ON op.id_parts  = p.id "+
 		"WHERE o.id = ?", id)
@@ -59,7 +59,7 @@ func dbRead(id string) Order {
 	}
 	for res.Next() {
 		var resul Part
-		err := res.Scan(&resul.PartsName, &resul.PartsPrice)
+		err := res.Scan(&resul.IdPart, &resul.PartsName, &resul.PartsPrice)
 		result.Parts = append(result.Parts, resul)
 		if err != nil {
 			fmt.Println(err)
@@ -92,6 +92,28 @@ func dbRead(id string) Order {
 	}
 
 	return result
+}
+func dbWritePartsOrder(in Order) error {
+	db, err := sql.Open("mysql", pass)
+	if err != nil {
+		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
+	}
+	_, err = db.Query("INSERT INTO `orders_parts` (`id_orders`, `id_parts`) VALUE (?,?)", in.IdOrder, in.Part.Id)
+	if err != nil {
+		fmt.Println(err, "не удалось записать статус ")
+	}
+	return err
+}
+func dbDeletePartsOrder(idPart Order) error {
+	db, err := sql.Open("mysql", pass)
+	if err != nil {
+		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
+	}
+	_, err = db.Query("DELETE FROM `orders_parts` WHERE `id_orders`=? AND `id_parts`=?", idPart.IdOrder, idPart.Part.Id)
+	if err != nil {
+		fmt.Println(err, "не удалось записать статус ")
+	}
+	return err
 }
 func dbWrite(uw Order) error {
 	db, err := sql.Open("mysql", pass)

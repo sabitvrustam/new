@@ -1,16 +1,16 @@
-{{ define "parts" }}
+{{ define "works" }}
 {{ template "header" }}
-<form action="newParts" method="post">
+<form action="newWork" method="post">
     <div class="container">
         <div class="row row-cols-auto">
             <div class="col">
                 <table>
                     <tbody>
                         <tr>
-                            <th colspan="2" style="text-align: center;"><label>Добавить новую деталь</label></th>
+                            <th colspan="2" style="text-align: center;"><label>Добавить новую работу</label></th>
                         </tr>
                         <tr>
-                            <td><label>Название детали</label></td>
+                            <td><label>Название работы</label></td>
                             <td><input type="text" required="required" placeholder="Название детали" maxlength="10"
                                     name="partsName" id="partsName">
                             </td>

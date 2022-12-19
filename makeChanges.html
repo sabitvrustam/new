@@ -1,69 +1,163 @@
 {{ define "makeChanges" }}
 {{ template "header" }}
-<table>
-    <tbody>
-        <li class="nav-item"><a class="nav-link" href="/makeChangesParts/{{.IdOrder}}">Запчасти</a></li>
-        <form action="" method="get">
-            <tr>
-                <td><label>Номер квитанции</label></td>
-                <td><input type="text" placeholder="Квитанция" maxlength="10" name="UserFirstName" id="UserFirstName"
-                        value="{{.IdOrder}}" ></td>
-            </tr>
-            <tr>
-                <td><label>Фамилия клиента</label></td>
-                <td><input type="text" placeholder="Фамилия" maxlength="10" name="UserFirstName" id="UserFirstName"
-                        value="{{.FirstName}}"></td>
-            </tr>
-            <tr>
-                <td><label>Имя клиента</label></td>
-                <td><input type="text" placeholder="Имя" maxlength="10" name="UserFirstName" id="UserFirstName"
-                        value="{{.LastName}}"></td>
-            </tr>
+<div class="container">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table>
+                <tbody>
+                    <form action="" method="get">
 
-            <tr>
-                <td><label>Отчество</label></td>
-                <td><input type="text" placeholder="Отчество" maxlength="10" name="UserFirstName" id="UserFirstName"
-                        value="{{.MidlName}}"></td>
-            </tr>
-            <tr>
-                <td><label>Номер телефона</label></td>
-                <td><input type="text" placeholder="Телефон" maxlength="10" name="UserFirstName" id="UserFirstName"
-                        value="{{.Phone}}"></td>
-            </tr>
-            <tr>
-                <td><label>Аппарат</label></td>
-                <td><input type="text" placeholder="аппарат" maxlength="10" name="UserFirstName" id="UserFirstName"
-                        value="{{.TypeEquipment}}"></td>
-            </tr>
-            <tr>
-                <td><label>Фирма</label></td>
-                <td><input type="text" placeholder="Фирма" maxlength="10" name="UserFirstName" id="UserFirstName"
-                        value="{{.Brand}}"></td>
-            </tr>
-            <tr>
-                <td><label>Модель</label></td>
-                <td><input type="text" placeholder="Модель" maxlength="10" name="UserFirstName" id="UserFirstName"
-                        value="{{.Model}}"></td>
-            </tr>
-            <tr>
-                <td><label> Серийный номер</label></td>
-                <td><input type="text" placeholder="Серийный номер" maxlength="10" name="UserFirstName"
-                        id="UserFirstName" value="{{.Sn}}"></td>
-            </tr>
-            <tr>
-                <td><label>Назначенный мастер</label></td>
-                <td><input type="text" placeholder="Мастер" maxlength="10" name="UserFirstName" id="UserFirstName"
-                        value="{{.Masters.L_name}}"></td>
-            </tr>
-            <tr>
-                <td><label>Статус ремонта</label></td>
-                <td><input type="text" placeholder="статус" maxlength="10" name="StatusOrder" id="StatusOrder"
-                        value="{{.StatusOrder}}"></td>
-            </tr>
-        </form>
-    </tbody>
-</table>
+                        <tr>
+                            <td><label>Hомер квитанции</label></td>
+                            <td><input type="text" placeholder="номер квитанции" name="id" id="id"></td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" type="reset">сброс</button>
+                                <button class="btn btn-primary btn-sm" type="submit">Поиск</button>
+                            </td>
 
-{{ template "footer" }}
+                        </tr>
+                    </form>
 
-{{ end }}
+                    <form action="" method="get">
+                        <tr>
+                            <td><label>Номер квитанции</label></td>
+                            <td><input type="text" placeholder="Квитанция" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.IdOrder}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фамилия клиента</label></td>
+                            <td><input type="text" placeholder="Фамилия" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.FirstName}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Имя клиента</label></td>
+                            <td><input type="text" placeholder="Имя" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.LastName}}" disabled></td>
+                        </tr>
+
+                        <tr>
+                            <td><label>Отчество</label></td>
+                            <td><input type="text" placeholder="Отчество" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.MidlName}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Номер телефона</label></td>
+                            <td><input type="text" placeholder="Телефон" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Phone}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Аппарат</label></td>
+                            <td><input type="text" placeholder="аппарат" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.TypeEquipment}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фирма</label></td>
+                            <td><input type="text" placeholder="Фирма" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Brand}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Модель</label></td>
+                            <td><input type="text" placeholder="Модель" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Model}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label> Серийный номер</label></td>
+                            <td><input type="text" placeholder="Серийный номер" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Sn}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Назначенный мастер</label></td>
+                            <td><input type="text" placeholder="Мастер" maxlength="10" name="UserFirstName"
+                                    id="UserFirstName" value="{{.Masters.L_name}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td><label>Статус ремонта</label></td>
+                            <td><input type="text" placeholder="статус" maxlength="10" name="StatusOrder"
+                                    id="StatusOrder" value="{{.StatusOrder}}" disabled></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-danger btn-sm" type="submit">Сошранить</button></td>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <form action="" method="get"></form>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Запчасти</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Цена</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {{$foobar := .IdOrder}}
+                    {{ range .Parts}}
+                    <tr>
+                        <td>{{ .PartsName }}</td>
+                        <td>{{ .PartsPrice }}</td>
+                        <td><a class="btn btn-danger btn-sm"
+                                href="/makeChangesDeleteParts/{{ $foobar }}/{{.IdPart}}">Delete</a></li>
+                        </td>
+                    </tr>
+                    {{ end }}
+                    <tr>
+                        <th>Итого</th>
+                        <td>{{ .PriceParts }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><a class="btn btn-primary btn-sm" href="/makeChangesParts/{{.IdOrder}}">Добавить
+                                запчасти</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <form action="" method="get"></form>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Работы</th>
+                    </tr>
+                    <tr>
+                    <th scope="col">Наименование</th>
+                    <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Works}}
+                    <tr>
+                        <td>{{ .WorkName }}</td>
+                        <td>{{ .WorkPrice }}</td>
+                        <td><a class="btn btn-danger btn-sm"
+                                href="/makeChangesDeleteParts/{{ $foobar }}/{{.IdPart}}">Delete</a></li>
+                    </tr>
+                    {{ end }}
+                    <tr>
+                        <td>итого</td>
+                        <td>{{ .PriceWork }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><a class="btn btn-primary btn-sm" href="/makeChangesParts/{{.IdOrder}}">Добавить
+                                работы</a></td>
+                    </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{ template "footer" }}
+
+    {{ end }}

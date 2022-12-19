@@ -10,6 +10,8 @@ type Order struct {
 	Masters
 	Price
 	OllParts []Part
+	OllWorks []Work
+	Part
 }
 
 type User struct {
@@ -34,11 +36,14 @@ type Id struct {
 }
 
 type Work struct {
+	Id        string
+	IdWork    string
 	WorkName  string
 	WorkPrice string
 }
 type Part struct {
 	Id         string
+	IdPart     int
 	PartsName  string
 	PartsPrice string
 }
