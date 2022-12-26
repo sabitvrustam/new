@@ -12,6 +12,7 @@ type Order struct {
 	OllParts []Part
 	OllWorks []Work
 	Part
+	Work
 }
 
 type User struct {

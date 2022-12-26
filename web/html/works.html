@@ -1,0 +1,59 @@
+{{ define "works" }}
+{{ template "header" }}
+<form action="newWork" method="post">
+    <div class="container">
+        <div class="row row-cols-auto">
+            <div class="col">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th colspan="2" style="text-align: center;"><label>Добавить новую работу</label></th>
+                        </tr>
+                        <tr>
+                            <td><label>Название работы</label></td>
+                            <td><input type="text" required="required" placeholder="Название детали" maxlength="10"
+                                    name="workName" id="workName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label>Цена за работу</label></td>
+                            <td><input type="text" required="required" placeholder="Цена" maxlength="10"
+                                    name="workPrice" id="workPrice">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-primary" type="submit">сохранить</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="text-align: center;">Работы</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Наименование</th>
+                            <th scope="col">Цена</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .OllWorks }}
+                        <tr>
+                            <td><label>{{ .Id }}</label></td>
+                            <td><label>{{ .WorkName }}</label></td>
+                            <td><label>{{ .WorkPrice }}</label></td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+{{ template "footer" }}
+
+{{ end }}

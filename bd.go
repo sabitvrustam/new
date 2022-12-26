@@ -35,7 +35,7 @@ func dbRead(id string) Order {
 			fmt.Println(err)
 		}
 	}
-	res, err = db.Query("SELECT w.work_name, w.work_price FROM orders AS o "+
+	res, err = db.Query("SELECT ow.id_work, w.work_name, w.work_price FROM orders AS o "+
 		"JOIN orders_work AS ow ON o.id = ow.id_orders "+
 		"JOIN work AS w ON ow.id_work = w.id "+
 		"WHERE o.id = ?", id)
@@ -44,7 +44,7 @@ func dbRead(id string) Order {
 	}
 	for res.Next() {
 		var resul Work
-		err := res.Scan(&resul.WorkName, &resul.WorkPrice)
+		err := res.Scan(&resul.IdWork, &resul.WorkName, &resul.WorkPrice)
 		result.Works = append(result.Works, resul)
 		if err != nil {
 			fmt.Println(err)
@@ -110,6 +110,28 @@ func dbDeletePartsOrder(idPart Order) error {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
 	}
 	_, err = db.Query("DELETE FROM `orders_parts` WHERE `id_orders`=? AND `id_parts`=?", idPart.IdOrder, idPart.Part.Id)
+	if err != nil {
+		fmt.Println(err, "не удалось записать статус ")
+	}
+	return err
+}
+func dbWriteWorksOrder(in Order) error {
+	db, err := sql.Open("mysql", pass)
+	if err != nil {
+		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
+	}
+	_, err = db.Query("INSERT INTO `orders_work` (`id_orders`, `id_work`) VALUE (?,?)", in.IdOrder, in.Work.Id)
+	if err != nil {
+		fmt.Println(err, "не удалось записать статус ")
+	}
+	return err
+}
+func dbDeleteWorksOrder(idwork Order) error {
+	db, err := sql.Open("mysql", pass)
+	if err != nil {
+		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
+	}
+	_, err = db.Query("DELETE FROM `orders_work` WHERE `id_orders`=? AND `id_work`=?", idwork.IdOrder, idwork.Work.Id)
 	if err != nil {
 		fmt.Println(err, "не удалось записать статус ")
 	}
@@ -200,6 +222,29 @@ func dbreadParts() Order {
 
 	return result
 }
+func dbreadWorks() Order {
+	db, err := sql.Open("mysql", pass)
+	if err != nil {
+		fmt.Println("не удалось подключиться к базе данных для считывния данных с списка работ", err)
+	}
+	defer db.Close()
+	res, err := db.Query("SELECT id, work_name, work_price from work ")
+	var result Order
+	if err != nil {
+		fmt.Sprintln(err)
+	}
+	for res.Next() {
+		var resul Work
+		err = res.Scan(&resul.Id, &resul.WorkName, &resul.WorkPrice)
+		if err != nil {
+			fmt.Println(err)
+		}
+		result.OllWorks = append(result.OllWorks, resul)
+	}
+
+	return result
+}
+
 func dbWriteParts(newPart Part) error {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
@@ -209,6 +254,22 @@ func dbWriteParts(newPart Part) error {
 	defer db.Close()
 
 	_, err = db.Query("INSERT INTO `parts` (`parts_name`, `parts_price`) VALUE (?, ?)", newPart.PartsName, newPart.PartsPrice)
+	if err != nil {
+		fmt.Println("не удалось записать новую запчасть в базу данных", err)
+		return err
+	}
+
+	return err
+}
+func dbWriteWork(newWork Work) error {
+	db, err := sql.Open("mysql", pass)
+	if err != nil {
+		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Query("INSERT INTO `work` (`work_name`, `work_price`) VALUE (?, ?)", newWork.WorkName, newWork.WorkPrice)
 	if err != nil {
 		fmt.Println("не удалось записать новую запчасть в базу данных", err)
 		return err
