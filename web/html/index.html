@@ -3,6 +3,18 @@
 <div id="main">What is Lorem Ipsum?
     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</div><br><br><br>
     <button onclick="createOrder(this)"></button>
+    <p id="test"></p>
+    <form id="mainform" onsubmit="return newUserForm(this)" method="post">
+        <label for="login">Введите логин</label>
+        <input type="text" name="login" id="login">
+        <span style="color: red;" id="loginErr"> </span><br><br>
+        <label for="password">Введите пароль</label>
+        <input type="password" name="password"><br><br>
+        <label for="passwordCon">Введите пароль еще раз</label>
+        <input type="password" name="passwordCon"><br><br>
+        <input type="submit" name="submit" value="Зарегестрироваться" sub><br><br>
+
+    </form>
     {{ template "footer" }}
 
 {{ end }}
