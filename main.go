@@ -3,6 +3,6 @@ package main
 func main() {
 	go tgbot()
 	handler()
-	//dbTest()
+	go dbTest()
 
 }

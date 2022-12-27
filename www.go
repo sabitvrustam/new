@@ -40,9 +40,9 @@ func handler() {
 	r.HandleFunc("/newWork", newWork)
 	r.HandleFunc("/makeChangesParts/savePartsOrder", savePartsOrder)
 	r.HandleFunc("/makeChangesWork/saveWorksOrder", saveWorksOrder)
-	http.Handle("/", r)
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./web/static"))))
 	fmt.Println("Server is listening...")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", r)
 }
 
 func NewTemplates() Templates {
