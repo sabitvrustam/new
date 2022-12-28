@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -24,6 +26,7 @@ func handler() {
 
 	t := NewTemplates()
 	r := mux.NewRouter()
+	r.HandleFunc("/test", test)
 	r.HandleFunc("/", t.index)
 	r.HandleFunc("/create", t.create)
 	r.HandleFunc("/newUser", newUser)
@@ -94,6 +97,21 @@ func NewTemplates() Templates {
 	}
 
 	return t
+}
+func test(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	b, _ := io.ReadAll(r.Body)
+
+	var res Order
+
+	err := json.Unmarshal(b, &res)
+	fmt.Println(err)
+
+	fmt.Println(res)
+	response := `{"name": "John", "age": 30}`
+
+	fmt.Fprintf(w, response)
+
 }
 
 func (t *Templates) index(w http.ResponseWriter, r *http.Request) {

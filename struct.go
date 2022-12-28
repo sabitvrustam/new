@@ -1,33 +1,33 @@
 package main
 
 type Order struct {
-	User
-	Device
-	Works []Work
-	Parts []Part
-	Id
-	Status
-	Masters
-	Price
+	User     `json:"user"`
+	Device   `json:"device"`
+	Works    []Work
+	Parts    []Part
+	Id       `json:"id"`
+	Status   `json:"status"`
+	Masters  `json:"masters"`
+	Price    `json:"price"`
 	OllParts []Part
 	OllWorks []Work
-	Part
-	Work
+	Part     `json:"part"`
+	Work     `json:"work"`
 }
 
 type User struct {
-	FirstName string
-	LastName  string
-	MidlName  string
-	Phone     string
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	MidlName  string `json:"midl_name"`
+	Phone     string `json:"phone"`
 }
 
 type Device struct {
-	TypeEquipment string
-	Brand         string
-	Model         string
-	Sn            string
-	Defect        string
+	TypeEquipment string `json:"type_equipment"`
+	Brand         string `json:"brand"`
+	Model         string `json:"model"`
+	Sn            string `json:"sn"`
+	Defect        string `json:"defect"`
 }
 
 type Id struct {
