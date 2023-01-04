@@ -99,6 +99,10 @@ func NewTemplates() Templates {
 	return t
 }
 func test(w http.ResponseWriter, r *http.Request) {
+	// t, err := template.ParseFiles("web/html/test.html")
+	// if err != nil {
+	// 	fmt.Println(err, "не удалось открыть страничку с работами")
+	// }
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
 
@@ -109,8 +113,10 @@ func test(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(res)
 	response := `{"name": "John", "age": 30}`
-
-	fmt.Fprintf(w, response)
+	w.Write([]byte(response))
+	//fmt.Fprintf(w, string(response))
+	// t.ExecuteTemplate(w, "test", string(response))
+	//fmt.Fprintf(w, string(response))
 
 }
 
