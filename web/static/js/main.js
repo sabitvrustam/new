@@ -1,9 +1,22 @@
-// var test = document.getElementById('test');
-// console.log(test.id);
-// test.innerHTML = "Привет друг";
-
-// var newOrder = document.getElementById('newOrder');
-// console.log(newOrder.method);
+function sendRequest(method, url, body = null) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest;
+        xhr.open(method, url);
+        xhr.responseType = 'json';
+        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.onload = () => {
+            if (xhr.status >= 400) {
+                reject(xhr.response);
+            } else {
+                resolve(xhr.response);
+            }
+        }
+        xhr.onerror = () => {
+            reject(xhr.response);
+        }
+        xhr.send(JSON.stringify(body));
+    });
+};
 
 function newUserForm(el) {
     var UserFirstName = el.UserFirstName.value;
@@ -16,8 +29,6 @@ function newUserForm(el) {
     var SerialN = el.SerialN.value;
     var MasterId = el.MasterId.value;
 
-
-    console.log(UserFirstName, UserLastName, UserMidlName, PhoneNombe, TypeEquipment, Brand, Model, SerialN, MasterId);
     document.getElementById("UserFirstNameErr").innerHTML = "";
     document.getElementById("UserLastNameErr").innerHTML = "";
     document.getElementById("UserMidlNameErr").innerHTML = "";
@@ -59,43 +70,40 @@ function newUserForm(el) {
         document.getElementById("SerialNErr").innerHTML = "не коректная модель";
         return false;
     }
-var Order = {User:{
-    FirstName: UserFirstName,
-}
+    var Order = {
+        user: {
+            first_name: UserFirstName,
+            last_name: UserLastName,
+            midl_name: UserMidlName,
+            phone: PhoneNombe
+        },
+        device: {
+            type_equipment: TypeEquipment,
+            brand: Brand,
+            model: Model,
+            sn: SerialN
+        },
+        masters:{
+            id: MasterId
+        },
+        status:{
+            status_order: "1",
+        }
 
+    };
+    const requestURL = '/test';
+
+sendRequest('post', requestURL, body = Order)
+    .then(data => console.log(data))
+    .catch(err =>console.log(err));
+
+
+    return true;
 };
 
-    return false;
-};
-
-// function sendRequest(method, url, body = null) {
-//     return new Promise((resolve, reject) => {
-//         const xhr = new XMLHttpRequest;
-//         xhr.open(method, url);
-//         xhr.responseType = 'json';
-//         xhr.setRequestHeader('Content-type', 'application/json');
-//         xhr.onload = () => {
-//             if (xhr.status >= 400) {
-//                 reject(xhr.response);
-//             } else {
-//                 resolve(xhr.response);
-//             }
-//         }
-//         xhr.onerror = () => {
-//             reject(xhr.response);
-//         }
-//         xhr.send(JSON.stringify(body));
-//     });
-// };
-
-// const requestURL = 'https://jsonplaceholder.typicode.com/users';
-
-// sendRequest('post', requestURL, body = {
-//     "name": "Rustam",
-//     "username": "Hello"
 
 
-// })
+
 //     .then(data => console.log(data))
 //     .catch(err =>console.log(err));
 

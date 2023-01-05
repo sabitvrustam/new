@@ -31,34 +31,34 @@ type Device struct {
 }
 
 type Id struct {
-	IdOrder  string
-	IdUser   string
-	IdBrands string
+	IdOrder  string `json:"id_order"`
+	IdUser   string `json:"id_user"`
+	IdBrands string `json:"id_brands"`
 }
 
 type Work struct {
-	Id        string
-	IdWork    string
-	WorkName  string
-	WorkPrice string
+	Id        string `json:"id"`
+	IdWork    string `json:"id_work"`
+	WorkName  string `json:"work_name"`
+	WorkPrice string `json:"work_price"`
 }
 type Part struct {
-	Id         string
-	IdPart     int
-	PartsName  string
-	PartsPrice string
+	Id         string `json:"id"`
+	IdPart     int    `json:"id_part"`
+	PartsName  string `json:"parts_name"`
+	PartsPrice string `json:"parts_price"`
 }
 type Status struct {
-	StatusOrder string
+	StatusOrder string `json:"status_order"`
 }
 type Price struct {
-	PriceWork  string
-	PriceParts string
+	PriceWork  string `json:"price_work"`
+	PriceParts string `json:"price_parts"`
 }
 
 type Masters struct {
-	Id     string
-	L_name string
+	Id     string `json:"id"`
+	L_name string `json:"l_name"`
 }
 
 type APIHandler struct {

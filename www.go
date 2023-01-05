@@ -29,7 +29,6 @@ func handler() {
 	r.HandleFunc("/test", test)
 	r.HandleFunc("/", t.index)
 	r.HandleFunc("/create", t.create)
-	r.HandleFunc("/newUser", newUser)
 	r.HandleFunc("/userStatus", t.userStatusPage)
 	r.HandleFunc("/makeChangesOrder", t.makeChangesOrder)
 	r.HandleFunc("/makeChanges/{id:[0-9]+}", t.makeChanges)
@@ -98,27 +97,6 @@ func NewTemplates() Templates {
 
 	return t
 }
-func test(w http.ResponseWriter, r *http.Request) {
-	// t, err := template.ParseFiles("web/html/test.html")
-	// if err != nil {
-	// 	fmt.Println(err, "не удалось открыть страничку с работами")
-	// }
-	defer r.Body.Close()
-	b, _ := io.ReadAll(r.Body)
-
-	var res Order
-
-	err := json.Unmarshal(b, &res)
-	fmt.Println(err)
-
-	fmt.Println(res)
-	response := `{"name": "John", "age": 30}`
-	w.Write([]byte(response))
-	//fmt.Fprintf(w, string(response))
-	// t.ExecuteTemplate(w, "test", string(response))
-	//fmt.Fprintf(w, string(response))
-
-}
 
 func (t *Templates) index(w http.ResponseWriter, r *http.Request) {
 	t.Main.ExecuteTemplate(w, "index", nil)
@@ -185,43 +163,25 @@ func (t *Templates) works(w http.ResponseWriter, r *http.Request) {
 	result := dbreadWorks()
 	t.Works.ExecuteTemplate(w, "works", result)
 }
+func test(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	b, _ := io.ReadAll(r.Body)
 
-func newUser(w http.ResponseWriter, r *http.Request) {
+	var res Order
 
-	userLastName := r.FormValue("UserLastName")
-	userFirstName := r.FormValue("UserFirstName")
-	userMidlName := r.FormValue("UserMidlName")
-	phoneNombe := r.FormValue("PhoneNombe")
-	typeEquipment := r.FormValue("TypeEquipment")
-	brand := r.FormValue("Brand")
-	model := r.FormValue("Model")
-	sn := r.FormValue("SN")
-	defect := r.FormValue("defect")
-	master := r.FormValue("Id")
-	status := ("1")
-
-	uw := Order{
-		Status: Status{
-			StatusOrder: status},
-		Masters: Masters{
-			Id: master},
-		User: User{
-			FirstName: userFirstName,
-			LastName:  userLastName,
-			MidlName:  userMidlName,
-			Phone:     phoneNombe},
-		Device: Device{
-			TypeEquipment: typeEquipment,
-			Brand:         brand,
-			Model:         model,
-			Sn:            sn,
-			Defect:        defect}}
-	err := dbWrite(uw)
+	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
-	} else {
-		http.Redirect(w, r, "/create", http.StatusSeeOther)
 	}
+	err = dbWrite(res)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(res)
+	response := `{"name": "John", "age": 30}`
+	w.WriteHeader(500)
+	w.Write([]byte(response))
+
 }
 
 func savePartsOrder(w http.ResponseWriter, r *http.Request) {
