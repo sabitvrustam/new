@@ -31,9 +31,9 @@ type Device struct {
 }
 
 type Id struct {
-	IdOrder  string `json:"id_order"`
-	IdUser   string `json:"id_user"`
-	IdBrands string `json:"id_brands"`
+	IdOrder  int64 `json:"id_order"`
+	IdUser   int64 `json:"id_user"`
+	IdBrands int64 `json:"id_brands"`
 }
 
 type Work struct {

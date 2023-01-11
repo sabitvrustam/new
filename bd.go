@@ -137,7 +137,7 @@ func dbDeleteWorksOrder(idwork Order) error {
 	}
 	return err
 }
-func dbWrite(uw Order) error {
+func dbWrite(uw Order) (err error, id3 int64) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
@@ -150,33 +150,34 @@ func dbWrite(uw Order) error {
 	res, err := tx.Exec("INSERT INTO `users` (`f_name`, `l_name`, `m_name`, `n_phone`) VALUE (?, ?, ?, ?)", uw.FirstName, uw.LastName, uw.MidlName, uw.Phone)
 	if err != nil {
 		fmt.Println("не удалось записать данные клиента в таблицу", err)
-		return err
+		return err, 0
 	}
 	id1, err := res.LastInsertId()
 	if err != nil {
 		fmt.Println("не считать последний добавленный ключ таблицы клиентов", err)
-		return err
+		return err, 0
 	}
 	fmt.Println(id1)
 	res, err = tx.Exec("INSERT INTO `device` (`type`, `brand`, `model`, `sn`) VALUE (?, ?, ?, ?)", uw.TypeEquipment, uw.Brand, uw.Model, uw.Sn)
 	if err != nil {
 		fmt.Println("не удалось записать данные устроиства в таблицу", err)
-		return err
+		return err, 0
 	}
 	id2, err := res.LastInsertId()
 	if err != nil {
 		fmt.Println("не удалось считать последний добавленный ключ таблицы устроиств", err)
-		return err
+		return err, 0
 	}
 	fmt.Println(id2, uw.Masters.Id)
-	_, err = tx.Exec("INSERT INTO `orders` (`id_users`, `id_device`, `id_masters`, `id_status`) VALUE (?, ?, ?, ?)", id1, id2, uw.Masters.Id, uw.StatusOrder)
+	res, err = tx.Exec("INSERT INTO `orders` (`id_users`, `id_device`, `id_masters`, `id_status`) VALUE (?, ?, ?, ?)", id1, id2, uw.Masters.Id, uw.StatusOrder)
 	if err != nil {
 		tx.Rollback()
 		fmt.Println("не удалось записать ключи в таблицу заказов", err)
-		return err
+		return err, 0
 	}
+	id3, err = res.LastInsertId()
 	err = tx.Commit()
-	return err
+	return err, id3
 }
 func dbreadMasters() []Masters {
 	db, err := sql.Open("mysql", pass)

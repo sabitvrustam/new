@@ -1,0 +1,98 @@
+{{ define "createPage" }}
+{{ template "header" }}
+<div id="create" class="form-group">
+    <table>
+        <tbody>
+            <form onsubmit="return newUserForm(this)" method="post">
+                <tr>
+                    <td><label>Фамилия клиента</label></td>
+                    <td><input type="text" size="15" placeholder="Фамилия" id="UserFirstName"> </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><sup style="color: red;" id="UserFirstNameErr"> </sup></td>
+                </tr>
+                <tr>
+                    <td><label>Имя клиента</label></td>
+                    <td><input type="text" size="15" placeholder="Имя" id="UserLastName">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><sup style="color: red;" id="UserLastNameErr"> </sup></td>
+                </tr>
+                <tr>
+                    <td><label>Отчество клиента</label></td>
+                    <td><input type="text" size="15" placeholder="Отчество" id="UserMidlName">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><sup style="color: red;" id="UserMidlNameErr"> </sup></td>
+                </tr>
+
+                <tr>
+                    <td><label>Номер телефона</label></td>
+                    <td><input type="text" size="15" placeholder="Телефон" id="PhoneNombe">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><sup style="color: red;" id="PhoneNombeErr"> </sup></td>
+                </tr>
+                <tr>
+                    <td><label>Типа аппарата</label></td>
+                    <td><input type="text" size="15" placeholder="Тип аппарата" id="TypeEquipment"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><sup style="color: red;" id="TypeEquipmentErr"> </sup></td>
+                </tr>
+                <tr>
+                    <td><label>Фирма</label></td>
+                    <td><input type="text" size="15" placeholder="Фирма" id="Brand"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><sup style="color: red;" id="BrandErr"> </sup></td>
+                </tr>
+
+                <tr>
+                    <td><label>Модель</label></td>
+                    <td><input type="text" size="15" placeholder="Модель" id="Model"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><sup style="color: red;" id="ModelErr"> </sup></td>
+                </tr>
+
+                <tr>
+                    <td><label>Серийный номер</label></td>
+                    <td><input type="text" size="15" placeholder="Серийный номер" id="SerialN"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><sup style="color: red;" id="SerialNErr"> </sup></td>
+                </tr>
+                <tr>
+                    <td><label>выберете мастера</label></td>
+
+                    <td ><select aria-setsize="15" name="Id" id="MasterId" >
+                                {{ range . }}
+                            <option aria-setsize="15" value="{{ .Id }}"  label="{{ .L_name }}" >
+                                {{ end }}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button type="reset">сброс</button><button type="submit">сохранить</button></td>
+                    </td>
+                </tr>
+            </form>
+        </tbody>
+    </table>
+</div><br><br><br>
+{{ template "footer" }}
+
+{{ end }}

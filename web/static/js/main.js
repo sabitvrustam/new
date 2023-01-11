@@ -3,7 +3,7 @@ function sendRequest(method, url, body = null) {
         const xhr = new XMLHttpRequest;
         xhr.open(method, url);
         xhr.responseType = 'json';
-        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.onload = () => {
             if (xhr.status >= 400) {
                 reject(xhr.response);
@@ -91,14 +91,14 @@ function newUserForm(el) {
         }
 
     };
-    const requestURL = '/test';
+    const requestURL = '/createOrder';
 
-sendRequest('post', requestURL, body = Order)
+sendRequest('POST', requestURL, body = Order)
     .then(data => console.log(data))
     .catch(err =>console.log(err));
 
 
-    return true;
+    return false;
 };
 
 
