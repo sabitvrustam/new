@@ -43,7 +43,7 @@ type Work struct {
 	WorkPrice string `json:"work_price"`
 }
 type Part struct {
-	Id         string `json:"id"`
+	Id         int64  `json:"id"`
 	IdPart     int    `json:"id_part"`
 	PartsName  string `json:"parts_name"`
 	PartsPrice string `json:"parts_price"`

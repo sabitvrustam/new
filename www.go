@@ -28,22 +28,25 @@ func handler() {
 
 	t := NewTemplates()
 	r := mux.NewRouter()
-	r.HandleFunc("/", t.index)
-	r.HandleFunc("/createOrder", createOrder).Methods("POST")
-	r.HandleFunc("/createOrder", t.createOrderPage).Methods("GET")
-	r.HandleFunc("/createOrder/{id:[0-9]+}", t.createOrderStatus).Methods("GET")
-	r.HandleFunc("/userStatus", t.userStatusPage)
-	r.HandleFunc("/makeChangesOrder", t.makeChangesOrder)
-	r.HandleFunc("/makeChanges/{id:[0-9]+}", t.makeChanges)
-	r.HandleFunc("/makeChangesParts/{id:[0-9]+}", t.makeChangesParts)
-	r.HandleFunc("/makeChangesDeleteParts/{idOrder:[0-9]+}/{idPart:[0-9]+}", makeChangesDleleteParts)
-	r.HandleFunc("/makeChangesWork/{id:[0-9]+}", t.makeChangesWork)
+	r.HandleFunc("/", t.indexPage)
+	r.HandleFunc("/order/new", t.newOrderPage)
+	r.HandleFunc("/order/status", t.statusOrderPage)
+	r.HandleFunc("/order/change", t.makeChangesOrder)
+
+	r.HandleFunc("/api/order", postApiOrder).Methods("POST")           //json новый заказ
+	r.HandleFunc("/api/order/{id:[0-9]+}", getApiOrder).Methods("GET") //json статус заказа
+	r.HandleFunc("/api/order/{id:[0-9]+}", putApiOrder).Methods("PUT") //json изменить заказ
+	r.HandleFunc("/api/masters", getApiMasters).Methods("GET")         //json список мастеров
+	r.HandleFunc("/api/parts", getApiParts).Methods("GET")             //json список запчастей
+	r.HandleFunc("/api/parts", postApiParts).Methods("POST")           //json новая запчасть
+	r.HandleFunc("/api/works", getApiWorks).Methods("GET")             //json список работ
+
+	//r.HandleFunc("/makeChangesParts/{id:[0-9]+}", t.makeChangesParts)
+	//r.HandleFunc("/makeChangesDeleteParts/{idOrder:[0-9]+}/{idPart:[0-9]+}", makeChangesDleleteParts)
+	//r.HandleFunc("/makeChangesWork/{id:[0-9]+}", t.makeChangesWork)
 	r.HandleFunc("/makeChangesDeleteWorks/{idOrder:[0-9]+}/{idWork:[0-9]+}", makeChangesDleleteWorks)
-	r.HandleFunc("/parts", t.parts)
-	r.HandleFunc("/works", t.works)
-	r.HandleFunc("/newParts", newParts)
 	r.HandleFunc("/newWork", newWork)
-	r.HandleFunc("/makeChangesParts/savePartsOrder", savePartsOrder)
+	//r.HandleFunc("/makeChangesParts/savePartsOrder", savePartsOrder)
 	r.HandleFunc("/makeChangesWork/saveWorksOrder", saveWorksOrder)
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./web/static"))))
 	fmt.Println("Server is listening...")
@@ -107,91 +110,40 @@ func NewTemplates() Templates {
 	return t
 }
 
-func (t *Templates) index(w http.ResponseWriter, r *http.Request) {
+func (t *Templates) indexPage(w http.ResponseWriter, r *http.Request) {
 	t.Main.ExecuteTemplate(w, "index", nil)
 }
-
-func (t *Templates) createOrderPage(w http.ResponseWriter, r *http.Request) {
-	result := dbreadMasters()
-	t.CteateOrder.ExecuteTemplate(w, "createPage", result)
+func (t *Templates) newOrderPage(w http.ResponseWriter, r *http.Request) {
+	t.CteateOrder.ExecuteTemplate(w, "createPage", nil)
 }
-func (t *Templates) createOrderStatus(w http.ResponseWriter, r *http.Request) {
-	t.OrderCreateStatus.ExecuteTemplate(w, "orderCreateStatus", nil)
+func (t *Templates) statusOrderPage(w http.ResponseWriter, r *http.Request) {
+	t.OrderStatus.ExecuteTemplate(w, "userStatus", nil)
 }
-
-func (t *Templates) userStatusPage(w http.ResponseWriter, r *http.Request) {
-	id := r.FormValue("id")
-	var result Order
-	if id != "" {
-		result = dbRead(id)
-	}
-	t.OrderStatus.ExecuteTemplate(w, "userStatus", result)
-}
-
-func (t *Templates) makeChanges(w http.ResponseWriter, r *http.Request) {
-	var result Order
-	vars := mux.Vars(r)
-	id := vars["id"]
-	result = dbRead(id)
-
-	id = r.FormValue("id")
-	if id != "" {
-		result = dbRead(id)
-	}
-	t.OrderChange.ExecuteTemplate(w, "makeChanges", result)
-}
-
 func (t *Templates) makeChangesOrder(w http.ResponseWriter, r *http.Request) {
-	id := r.FormValue("id")
-	if id != "" {
-		url := fmt.Sprintf("/makeChanges/%s", id)
-		http.Redirect(w, r, url, http.StatusSeeOther)
-	}
 	t.MakeOrderChange.ExecuteTemplate(w, "makeChangesOrder", nil)
 }
 
-func (t *Templates) makeChangesParts(w http.ResponseWriter, r *http.Request) {
+func getApiOrder(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.ParseInt(vars["id"], 10, 64)
+	id := vars["id"]
+	result := readOrder(id)
+	m, err := json.Marshal(result)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, "")
 	}
-	fmt.Println(id)
-	result := dbreadParts()
-	result.IdOrder = id
-	t.OrderPartsChange.ExecuteTemplate(w, "makechangesparts", result)
+	w.WriteHeader(200)
+	w.Write(m)
 }
 
-func (t *Templates) makeChangesWork(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.ParseInt(vars["id"], 10, 64)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(id)
-	result := dbreadWorks()
-	result.IdOrder = id
-	t.OrderWorkChange.ExecuteTemplate(w, "makeChangesWork", result)
-}
-func (t *Templates) parts(w http.ResponseWriter, r *http.Request) {
-	result := dbreadParts()
-	t.Parts.ExecuteTemplate(w, "parts", result)
-}
-func (t *Templates) works(w http.ResponseWriter, r *http.Request) {
-	result := dbreadWorks()
-	t.Works.ExecuteTemplate(w, "works", result)
-}
-func createOrder(w http.ResponseWriter, r *http.Request) {
+func postApiOrder(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
-
 	var res Order
-
 	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
 	}
-	err, idOrder := dbWrite(res)
+	idOrder, err := newOrder(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -202,53 +154,158 @@ func createOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(200)
 	w.Write(m)
-
 }
-
-func savePartsOrder(w http.ResponseWriter, r *http.Request) {
-
-	err := r.ParseForm()
+func putApiOrder(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	b, _ := io.ReadAll(r.Body)
+	var res Order
+	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
 	}
-	var partId Order
-	id, err := strconv.ParseInt(r.FormValue("id"), 10, 64)
+	idOrder, err := newOrder(res)
 	if err != nil {
 		fmt.Println(err)
 	}
-	partId.IdOrder = id
-	for n, i := range r.Form {
-		if n == "id" {
-		} else {
-			for _, m := range i {
-				partId.Part.Id = m
-				dbWritePartsOrder(partId)
-			}
-		}
+	res.IdOrder = idOrder
+	m, err := json.Marshal(res)
+	if err != nil {
+		fmt.Println(err, "")
 	}
-	url := fmt.Sprintf("/makeChanges/%d", id)
-
-	http.Redirect(w, r, url, http.StatusSeeOther)
-
+	w.WriteHeader(200)
+	w.Write(m)
 }
-func makeChangesDleleteParts(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	var part Order
 
-	idOrder, err := strconv.ParseInt(vars["idOrder"], 10, 64)
+func getApiMasters(w http.ResponseWriter, r *http.Request) {
+	result := dbreadMasters()
+	m, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println(err, "")
+		w.WriteHeader(404)
+	}
+	w.WriteHeader(200)
+	w.Write(m)
+}
+
+func getApiParts(w http.ResponseWriter, r *http.Request) {
+	result := dbreadParts()
+	m, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println(err, "")
+		w.WriteHeader(404)
+	}
+	w.WriteHeader(200)
+	w.Write(m)
+}
+
+func postApiParts(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	b, _ := io.ReadAll(r.Body)
+	var res Part
+	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
 	}
-	part.IdOrder = idOrder
-	part.Part.Id = vars["idPart"]
-	fmt.Println(part.IdOrder, part.Part.Id)
-
-	dbDeletePartsOrder(part)
-	url := fmt.Sprintf("/makeChanges/%d", part.IdOrder)
-
-	http.Redirect(w, r, url, http.StatusSeeOther)
-
+	id, err := dbWriteParts(res)
+	if err != nil {
+		fmt.Println(err)
+	}
+	res.Id = id
+	m, err := json.Marshal(res)
+	if err != nil {
+		fmt.Println(err, "")
+	}
+	w.WriteHeader(200)
+	w.Write(m)
 }
+
+func getApiWorks(w http.ResponseWriter, r *http.Request) {
+	result := dbreadWorks()
+	m, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println(err, "")
+		w.WriteHeader(404)
+	}
+	w.WriteHeader(200)
+	w.Write(m)
+}
+
+// func (t *Templates) makeChangesParts(w http.ResponseWriter, r *http.Request) {
+// 	vars := mux.Vars(r)
+// 	id, err := strconv.ParseInt(vars["id"], 10, 64)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	fmt.Println(id)
+// 	result := dbreadParts()
+// 	result = id
+// 	t.OrderPartsChange.ExecuteTemplate(w, "makechangesparts", result)
+// }
+
+//	func (t *Templates) makeChangesWork(w http.ResponseWriter, r *http.Request) {
+//		vars := mux.Vars(r)
+//		id, err := strconv.ParseInt(vars["id"], 10, 64)
+//		if err != nil {
+//			fmt.Println(err)
+//		}
+//		fmt.Println(id)
+//		result := dbreadWorks()
+//		result.IdOrder = id
+//		t.OrderWorkChange.ExecuteTemplate(w, "makeChangesWork", result)
+//	}
+func (t *Templates) parts(w http.ResponseWriter, r *http.Request) {
+	result := dbreadParts()
+	t.Parts.ExecuteTemplate(w, "parts", result)
+}
+func (t *Templates) works(w http.ResponseWriter, r *http.Request) {
+	result := dbreadWorks()
+	t.Works.ExecuteTemplate(w, "works", result)
+}
+
+// func savePartsOrder(w http.ResponseWriter, r *http.Request) {
+
+// 	err := r.ParseForm()
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	var partId Order
+// 	id, err := strconv.ParseInt(r.FormValue("id"), 10, 64)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	partId.IdOrder = id
+// 	for n, i := range r.Form {
+// 		if n == "id" {
+// 		} else {
+// 			for _, m := range i {
+// 				partId.Part.Id = m
+// 				dbWritePartsOrder(partId)
+// 			}
+// 		}
+// 	}
+// 	url := fmt.Sprintf("/makeChanges/%d", id)
+
+// 	http.Redirect(w, r, url, http.StatusSeeOther)
+
+// }
+// func makeChangesDleleteParts(w http.ResponseWriter, r *http.Request) {
+// 	vars := mux.Vars(r)
+// 	var part Order
+
+// 	idOrder, err := strconv.ParseInt(vars["idOrder"], 10, 64)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	part.IdOrder = idOrder
+// 	part.Part.Id = vars["idPart"]
+// 	fmt.Println(part.IdOrder, part.Part.Id)
+
+// 	dbDeletePartsOrder(part)
+// 	url := fmt.Sprintf("/makeChanges/%d", part.IdOrder)
+
+// 	http.Redirect(w, r, url, http.StatusSeeOther)
+
+// }
 
 func saveWorksOrder(w http.ResponseWriter, r *http.Request) {
 
@@ -293,17 +350,6 @@ func makeChangesDleleteWorks(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, url, http.StatusSeeOther)
 
-}
-
-func newParts(w http.ResponseWriter, r *http.Request) {
-	partsName := r.FormValue("partsName")
-	partsPrice := r.FormValue("partsPrice")
-	newParts := Part{
-		PartsName:  partsName,
-		PartsPrice: partsPrice,
-	}
-	dbWriteParts(newParts)
-	http.Redirect(w, r, "/parts", http.StatusSeeOther)
 }
 
 func newWork(w http.ResponseWriter, r *http.Request) {
