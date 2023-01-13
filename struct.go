@@ -37,7 +37,7 @@ type Id struct {
 }
 
 type Work struct {
-	Id        string `json:"id"`
+	Id        int64  `json:"id"`
 	IdWork    string `json:"id_work"`
 	WorkName  string `json:"work_name"`
 	WorkPrice string `json:"work_price"`
@@ -57,8 +57,11 @@ type Price struct {
 }
 
 type Masters struct {
-	Id     string `json:"id"`
-	L_name string `json:"l_name"`
+	Id        int64  `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	MidlName  string `json:"midl_name"`
+	Phone     string `json:"phone"`
 }
 
 type APIHandler struct {
