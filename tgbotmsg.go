@@ -43,7 +43,7 @@ func tgbot() {
 			bot.Send(msg)
 		}
 		nom := text
-		result := readOrder(nom)
+		result, _ := readOrder(nom)
 		msg.Text = fmt.Sprintf(" Акт № %d\n клиент - %s %s %s\n статус ремонта %s", result.IdOrder, result.User.FirstName, result.User.LastName, result.User.MidlName, result.StatusOrder)
 		bot.Send(msg)
 	}

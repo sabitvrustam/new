@@ -1,18 +1,14 @@
 package main
 
 type Order struct {
-	User     `json:"user"`
-	Device   `json:"device"`
-	Works    []Work
-	Parts    []Part
-	Id       `json:"id"`
-	Status   `json:"status"`
-	Masters  `json:"masters"`
-	Price    `json:"price"`
-	OllParts []Part
-	OllWorks []Work
-	Part     `json:"part"`
-	Work     `json:"work"`
+	User    `json:"user"`
+	Device  `json:"device"`
+	Works   []Work
+	Parts   []Part
+	Id      `json:"id"`
+	Status  `json:"status"`
+	Masters `json:"masters"`
+	Price   `json:"price"`
 }
 
 type User struct {
@@ -38,13 +34,11 @@ type Id struct {
 
 type Work struct {
 	Id        int64  `json:"id"`
-	IdWork    string `json:"id_work"`
 	WorkName  string `json:"work_name"`
 	WorkPrice string `json:"work_price"`
 }
 type Part struct {
 	Id         int64  `json:"id"`
-	IdPart     int    `json:"id_part"`
 	PartsName  string `json:"parts_name"`
 	PartsPrice string `json:"parts_price"`
 }
@@ -62,8 +56,4 @@ type Masters struct {
 	LastName  string `json:"last_name"`
 	MidlName  string `json:"midl_name"`
 	Phone     string `json:"phone"`
-}
-
-type APIHandler struct {
-	Id string
 }
