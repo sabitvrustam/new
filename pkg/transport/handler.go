@@ -1,4 +1,4 @@
-package main
+package transport
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func handler() {
+func Handler() {
 
 	t := NewTemplates()
 	r := mux.NewRouter()

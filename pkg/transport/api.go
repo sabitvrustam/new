@@ -1,4 +1,4 @@
-package main
+package transport
 
 import (
 	"encoding/json"
@@ -8,12 +8,14 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/sabitvrustam/new/pkg/database"
+	"github.com/sabitvrustam/new/pkg/types"
 )
 
 func getApiOrder(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	result, err := readOrder(id)
+	result, err := database.ReadOrder(id)
 	if err != nil {
 		fmt.Println(err, "не удалось считать данные ордера из базы данных по ид")
 		w.WriteHeader(500)
@@ -35,8 +37,12 @@ func getApiOrder(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func ReadOrder(id string) {
+	panic("unimplemented")
+}
+
 func postApiOrder(w http.ResponseWriter, r *http.Request) {
-	var result Order
+	var result types.Order
 	defer r.Body.Close()
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -50,7 +56,7 @@ func postApiOrder(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	id, err := newOrder(result)
+	id, err := database.NewOrder(result)
 	if err != nil || id == 0 {
 		fmt.Println(err, "ошибка базы данных не удалось записать новый заказ")
 		w.WriteHeader(500)
@@ -69,12 +75,12 @@ func postApiOrder(w http.ResponseWriter, r *http.Request) {
 func putApiOrder(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
-	var res Order
+	var res types.Order
 	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
 	}
-	idOrder, err := newOrder(res)
+	idOrder, err := database.NewOrder(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -88,7 +94,7 @@ func putApiOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func getApiMasters(w http.ResponseWriter, r *http.Request) {
-	result := readMasters()
+	result := database.ReadMasters()
 	m, err := json.Marshal(result)
 	if err != nil {
 		fmt.Println(err, "")
@@ -101,12 +107,12 @@ func getApiMasters(w http.ResponseWriter, r *http.Request) {
 func postApiMasters(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
-	var res Masters
+	var res types.Masters
 	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
 	}
-	id, err := newMaster(res)
+	id, err := database.NewMaster(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -121,7 +127,7 @@ func postApiMasters(w http.ResponseWriter, r *http.Request) {
 func putApiMasters(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
-	var res Masters
+	var res types.Masters
 	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
@@ -132,7 +138,7 @@ func putApiMasters(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	res.Id = id
-	err = changMaster(res)
+	err = database.ChangMaster(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -150,7 +156,7 @@ func deleteApiMasters(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = deleteMaster(id)
+	err = database.DeleteMaster(id)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -164,7 +170,7 @@ func deleteApiMasters(w http.ResponseWriter, r *http.Request) {
 }
 
 func getApiParts(w http.ResponseWriter, r *http.Request) {
-	result := readParts()
+	result := database.ReadParts()
 	m, err := json.Marshal(result)
 	if err != nil {
 		fmt.Println(err, "")
@@ -177,12 +183,12 @@ func getApiParts(w http.ResponseWriter, r *http.Request) {
 func postApiParts(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
-	var res Part
+	var res types.Part
 	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
 	}
-	id, err := newPart(res)
+	id, err := database.NewPart(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -197,7 +203,7 @@ func postApiParts(w http.ResponseWriter, r *http.Request) {
 func putApiPart(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
-	var res Part
+	var res types.Part
 	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
@@ -208,7 +214,7 @@ func putApiPart(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	res.Id = id
-	err = changePart(res)
+	err = database.ChangePart(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -226,7 +232,7 @@ func deleteApiPart(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = deletePart(id)
+	err = database.DeletePart(id)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -240,7 +246,7 @@ func deleteApiPart(w http.ResponseWriter, r *http.Request) {
 }
 
 func getApiWorks(w http.ResponseWriter, r *http.Request) {
-	result := readWoeks()
+	result := database.ReadWoeks()
 	m, err := json.Marshal(result)
 	if err != nil {
 		fmt.Println(err, "")
@@ -253,12 +259,12 @@ func getApiWorks(w http.ResponseWriter, r *http.Request) {
 func postApiWork(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
-	var res Work
+	var res types.Work
 	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
 	}
-	id, err := writeWork(res)
+	id, err := database.WriteWork(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -273,7 +279,7 @@ func postApiWork(w http.ResponseWriter, r *http.Request) {
 func putApiWork(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
-	var res Work
+	var res types.Work
 	err := json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err)
@@ -284,7 +290,7 @@ func putApiWork(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	res.Id = id
-	err = changeWork(res)
+	err = database.ChangeWork(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -304,7 +310,7 @@ func deleteApiWork(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = deleteWork(id)
+	err = database.DeleteWork(id)
 	if err != nil {
 		fmt.Println(err)
 	}

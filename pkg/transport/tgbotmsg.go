@@ -1,4 +1,4 @@
-package main
+package transport
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"os"
 
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
+	"github.com/sabitvrustam/new/pkg/database"
 )
 
 func Tgbot() {
@@ -43,7 +44,7 @@ func Tgbot() {
 			bot.Send(msg)
 		}
 		nom := text
-		result, _ := readOrder(nom)
+		result, _ := database.ReadOrder(nom)
 		msg.Text = fmt.Sprintf(" Акт № %d\n клиент - %s %s %s\n статус ремонта %s", result.IdOrder, result.User.FirstName, result.User.LastName, result.User.MidlName, result.StatusOrder)
 		bot.Send(msg)
 	}

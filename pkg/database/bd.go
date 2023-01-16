@@ -6,20 +6,21 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/sabitvrustam/new/pkg/types"
 )
 
 var dbuser string = os.Getenv("bduser")
 var dbpass string = os.Getenv("bdpass")
 var pass string = fmt.Sprintf("%s:%s@tcp(127.0.0.1)/my_service", dbuser, dbpass)
 
-func readOrder(id string) (order Order, err error) {
+func ReadOrder(id string) (Order types.Order, err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
 		return
 	}
 	defer db.Close()
-	var result Order
+	var result types.Order
 	res, err := db.Query("SELECT o.id, u.f_name, u.l_name, u.m_name, u.n_phone, d.type, d.brand, d.model, d.sn, m.l_name, s.o_status FROM orders AS o "+
 		"JOIN users AS u ON o.id_users = u.id "+
 		"JOIN device AS d ON o.id_device = d.id "+
@@ -44,7 +45,7 @@ func readOrder(id string) (order Order, err error) {
 		fmt.Sprintln("не удалось считать данные работ заказа из базы данных", err)
 	}
 	for res.Next() {
-		var resul Work
+		var resul types.Work
 		err := res.Scan(&resul.Id, &resul.WorkName, &resul.WorkPrice)
 		result.Works = append(result.Works, resul)
 		if err != nil {
@@ -59,7 +60,7 @@ func readOrder(id string) (order Order, err error) {
 		fmt.Sprintln("не удалось считать данные работ заказа из базы данных", err)
 	}
 	for res.Next() {
-		var resul Part
+		var resul types.Part
 		err := res.Scan(&resul.Id, &resul.PartsName, &resul.PartsPrice)
 		result.Parts = append(result.Parts, resul)
 		if err != nil {
@@ -94,7 +95,7 @@ func readOrder(id string) (order Order, err error) {
 
 	return result, err
 }
-func newOrder(uw Order) (id3 int64, err error) {
+func NewOrder(uw types.Order) (id3 int64, err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
@@ -136,19 +137,19 @@ func newOrder(uw Order) (id3 int64, err error) {
 	return id3, err
 }
 
-func readMasters() []Masters {
+func ReadMasters() []types.Masters {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
 	}
 	defer db.Close()
 	res, err := db.Query("SELECT id, l_name, f_name, m_name, n_phone from masters ")
-	var result []Masters
+	var result []types.Masters
 	if err != nil {
 		fmt.Sprintln(err)
 	}
 	for res.Next() {
-		var resul Masters
+		var resul types.Masters
 		err = res.Scan(&resul.Id, &resul.LastName, &resul.FirstName, &resul.MidlName, &resul.Phone)
 		if err != nil {
 			fmt.Println(err)
@@ -158,7 +159,7 @@ func readMasters() []Masters {
 	return result
 }
 
-func newMaster(master Masters) (id int64, err error) {
+func NewMaster(master types.Masters) (id int64, err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
@@ -174,7 +175,7 @@ func newMaster(master Masters) (id int64, err error) {
 	return id, err
 
 }
-func changMaster(master Masters) (err error) {
+func ChangMaster(master types.Masters) (err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
@@ -189,7 +190,7 @@ func changMaster(master Masters) (err error) {
 	return err
 
 }
-func deleteMaster(id int64) error {
+func DeleteMaster(id int64) error {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
@@ -201,7 +202,7 @@ func deleteMaster(id int64) error {
 	return err
 }
 
-func readParts() (result []Part) {
+func ReadParts() (result []types.Part) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
@@ -212,7 +213,7 @@ func readParts() (result []Part) {
 		fmt.Sprintln(err)
 	}
 	for res.Next() {
-		var resul Part
+		var resul types.Part
 		err = res.Scan(&resul.Id, &resul.PartsName, &resul.PartsPrice)
 		if err != nil {
 			fmt.Println(err)
@@ -222,7 +223,7 @@ func readParts() (result []Part) {
 
 	return result
 }
-func newPart(newPart Part) (id int64, err error) {
+func NewPart(newPart types.Part) (id int64, err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
@@ -239,7 +240,7 @@ func newPart(newPart Part) (id int64, err error) {
 
 	return id, err
 }
-func changePart(part Part) (err error) {
+func ChangePart(part types.Part) (err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
@@ -254,7 +255,7 @@ func changePart(part Part) (err error) {
 	return err
 
 }
-func deletePart(id int64) (err error) {
+func DeletePart(id int64) (err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
@@ -267,7 +268,7 @@ func deletePart(id int64) (err error) {
 
 }
 
-func readWoeks() (result []Work) {
+func ReadWoeks() (result []types.Work) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с списка работ", err)
@@ -278,7 +279,7 @@ func readWoeks() (result []Work) {
 		fmt.Sprintln(err)
 	}
 	for res.Next() {
-		var resul Work
+		var resul types.Work
 		err = res.Scan(&resul.Id, &resul.WorkName, &resul.WorkPrice)
 		if err != nil {
 			fmt.Println(err)
@@ -289,7 +290,7 @@ func readWoeks() (result []Work) {
 	return result
 }
 
-func writeWork(newWork Work) (id int64, err error) {
+func WriteWork(newWork types.Work) (id int64, err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
@@ -306,7 +307,7 @@ func writeWork(newWork Work) (id int64, err error) {
 	return id, err
 }
 
-func changeWork(work Work) (err error) {
+func ChangeWork(work types.Work) (err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
@@ -321,7 +322,7 @@ func changeWork(work Work) (err error) {
 	return err
 
 }
-func deleteWork(id int64) (err error) {
+func DeleteWork(id int64) (err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
