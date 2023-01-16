@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -8,7 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func dbTest() {
+func DbTest() {
 
 	var dbuser string = os.Getenv("bduser")
 	var dbpass string = os.Getenv("bdpass")

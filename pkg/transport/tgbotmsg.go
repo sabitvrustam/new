@@ -8,7 +8,7 @@ import (
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
 )
 
-func tgbot() {
+func Tgbot() {
 	// подключаемся к боту с помощью токена
 	key := os.Getenv("tbotapi")
 	bot, err := tgbotapi.NewBotAPI(key)

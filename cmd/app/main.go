@@ -1,8 +1,8 @@
 package main
 
 func main() {
-	go tgbot()
+	go Tgbot()
 	handler()
-	go dbTest()
+	go DbTest()
 
 }
