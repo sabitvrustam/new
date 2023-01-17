@@ -2,12 +2,13 @@ package main
 
 import (
 	"github.com/sabitvrustam/new/pkg/database"
-	transport "github.com/sabitvrustam/new/pkg/transport/http"
+	"github.com/sabitvrustam/new/pkg/transport/http"
+	"github.com/sabitvrustam/new/pkg/transport/telegram"
 )
 
 func main() {
-	go transport.Tgbot()
-	transport.Handler()
+	go telegram.Tgbot()
+	http.Handler()
 	go database.DbTest()
 
 }

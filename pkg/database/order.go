@@ -13,6 +13,35 @@ var dbuser string = os.Getenv("bduser")
 var dbpass string = os.Getenv("bdpass")
 var pass string = fmt.Sprintf("%s:%s@tcp(127.0.0.1)/my_service", dbuser, dbpass)
 
+func ReadOrders(limit string, offset string) (Order []types.Order, err error) {
+	db, err := sql.Open("mysql", pass)
+	if err != nil {
+		fmt.Println("не удалось подключиться к базе данных для получения списка заказов", err)
+		return
+	}
+	defer db.Close()
+	var result types.Order
+	res, err := db.Query("SELECT o.id, u.f_name, u.l_name, u.m_name, u.n_phone, d.type, d.brand, d.model, d.sn, m.l_name, s.o_status FROM orders AS o "+
+		"JOIN users AS u ON o.id_users = u.id "+
+		"JOIN device AS d ON o.id_device = d.id "+
+		"JOIN masters AS m ON o.id_masters  = m.id "+
+		"JOIN status AS s ON o.id_status  = s.id "+
+		"ORDER BY id DESC  LIMIT ? OFFSET ?", limit, offset)
+	if err != nil {
+		fmt.Sprintln("не удалось считать данные заказа из базы данных", err)
+	}
+	for res.Next() {
+		err = res.Scan(&result.IdOrder, &result.User.FirstName, &result.User.LastName, &result.User.MidlName, &result.User.Phone, &result.TypeEquipment,
+			&result.Brand, &result.Model, &result.Sn, &result.Masters.LastName, &result.Status.StatusOrder)
+		if err != nil {
+			fmt.Println(err)
+		}
+		Order = append(Order, result)
+	}
+	return Order, err
+
+}
+
 func ReadOrder(id string) (Order types.Order, err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
