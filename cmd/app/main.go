@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/sabitvrustam/new/pkg/database"
-	"github.com/sabitvrustam/new/pkg/transport"
+	transport "github.com/sabitvrustam/new/pkg/transport/http"
 )
 
 func main() {
