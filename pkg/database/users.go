@@ -100,7 +100,7 @@ func ChangUser(user types.User) (err error) {
 	return err
 
 }
-func DeleteUser(id int64) error {
+func DelUser(id int64) error {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)

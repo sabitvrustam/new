@@ -139,7 +139,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
-	err = database.DeleteUser(id)
+	err = database.DelUser(id)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных удаление клиента")
 		w.WriteHeader(500)

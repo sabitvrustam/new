@@ -20,6 +20,7 @@ type User struct {
 }
 
 type Device struct {
+	Id            int64  `json:"id_device"`
 	TypeEquipment string `json:"type_equipment"`
 	Brand         string `json:"brand"`
 	Model         string `json:"model"`
