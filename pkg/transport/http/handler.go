@@ -36,6 +36,7 @@ func Handler() {
 	r.HandleFunc("/api/order", api.PostOrder).Methods("POST")                                 //json новый заказ
 	r.HandleFunc("/api/order/{id:[0-9]+}", api.GetOrder).Methods("GET")                       //json статус заказа
 	r.HandleFunc("/api/order/{id:[0-9]+}", api.PutOrder).Methods("PUT")                       //json изменить заказ
+	r.HandleFunc("/api/order/{id:[0-9]+}", api.DeleteOrder).Methods("DELETE")                 //json удалить заказ
 	r.HandleFunc("/api/masters", api.GetMasters).Methods("GET")                               //json список мастеров
 	r.HandleFunc("/api/masters", api.PostMasters).Methods("POST")                             //json новый мастер
 	r.HandleFunc("/api/masters/{id:[0-9]+}", api.PutMasters).Methods("PUT")                   //json изменить мастера

@@ -1,16 +1,12 @@
 package types
 
 type Order struct {
+	IdOrder int64 `json:"id_order"`
 	User    `json:"user"`
 	Device  `json:"device"`
-	Works   []Work
-	Parts   []Part
-	Id      `json:"id"`
 	Status  `json:"status"`
-	Masters `json:"masters"`
-	Price   `json:"price"`
+	Master  `json:"master"`
 }
-
 type User struct {
 	Id        int64  `json:"id_user"`
 	FirstName string `json:"first_name"`
@@ -18,7 +14,6 @@ type User struct {
 	MidlName  string `json:"midl_name"`
 	Phone     string `json:"phone"`
 }
-
 type Device struct {
 	Id            int64  `json:"id_device"`
 	TypeEquipment string `json:"type_equipment"`
@@ -31,7 +26,9 @@ type Device struct {
 type Id struct {
 	IdOrder  int64 `json:"id_order"`
 	IdUser   int64 `json:"id_user"`
-	IdBrands int64 `json:"id_brands"`
+	IdDevice int64 `json:"id_device"`
+	IdMaster int64 `json:"id_master"`
+	IdStatus int64 `json:"id_status"`
 }
 
 type Work struct {
@@ -52,7 +49,7 @@ type Price struct {
 	PriceParts string `json:"price_parts"`
 }
 
-type Masters struct {
+type Master struct {
 	Id        int64  `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`

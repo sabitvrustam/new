@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
 	"github.com/sabitvrustam/new/pkg/database"
@@ -43,7 +44,7 @@ func Tgbot() {
 			msg.Text = nomberAkt
 			bot.Send(msg)
 		}
-		nom := text
+		nom, _ := strconv.ParseInt(text, 10, 64)
 		result, _ := database.ReadOrder(nom)
 		msg.Text = fmt.Sprintf(" Акт № %d\n клиент - %s %s %s\n статус ремонта %s", result.IdOrder, result.User.FirstName, result.User.LastName, result.User.MidlName, result.StatusOrder)
 		bot.Send(msg)

@@ -7,7 +7,7 @@ import (
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func ReadMasters() (result []types.Masters, err error) {
+func ReadMasters() (result []types.Master, err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
@@ -18,7 +18,7 @@ func ReadMasters() (result []types.Masters, err error) {
 		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице мастеров")
 	}
 	for res.Next() {
-		var resul types.Masters
+		var resul types.Master
 		err = res.Scan(&resul.Id, &resul.LastName, &resul.FirstName, &resul.MidlName, &resul.Phone)
 		if err != nil {
 			fmt.Println(err)
@@ -28,7 +28,7 @@ func ReadMasters() (result []types.Masters, err error) {
 	return result, err
 }
 
-func NewMaster(master types.Masters) (id int64, err error) {
+func NewMaster(master types.Master) (id int64, err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
@@ -44,7 +44,7 @@ func NewMaster(master types.Masters) (id int64, err error) {
 	return id, err
 
 }
-func ChangMaster(master types.Masters) (err error) {
+func ChangMaster(master types.Master) (err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)

@@ -36,7 +36,7 @@ func PostMasters(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
-	var result types.Masters
+	var result types.Master
 	err = json.Unmarshal(b, &result)
 	if err != nil {
 		fmt.Println(err, "ошибка unmarshal новый масер")
@@ -66,7 +66,7 @@ func PutMasters(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
-	var result types.Masters
+	var result types.Master
 	err = json.Unmarshal(b, &result)
 	if err != nil {
 		fmt.Println(err, "ошибка unmarshal изменения мастера")

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/sabitvrustam/new/pkg/database"
@@ -34,7 +35,7 @@ func GetOrders(w http.ResponseWriter, r *http.Request) {
 
 func GetOrder(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id := vars["id"]
+	id, _ := strconv.ParseInt(vars["id"], 10, 64)
 	result, err := database.ReadOrder(id)
 	if err != nil {
 		fmt.Println(err, "не удалось считать данные ордера из базы данных по ид")
@@ -58,7 +59,7 @@ func GetOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostOrder(w http.ResponseWriter, r *http.Request) {
-	var result types.Order
+	var result types.Id
 	defer r.Body.Close()
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -78,8 +79,16 @@ func PostOrder(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	result.IdOrder = id
-	m, err := json.Marshal(result)
+
+	var resul types.Order
+	resul, err = database.ReadOrder(id)
+	if err != nil {
+		fmt.Println(err, "не удалось считать данные ордера из базы данных по ид")
+		w.WriteHeader(500)
+		return
+	}
+
+	m, err := json.Marshal(resul)
 	if err != nil {
 		fmt.Println(err, "не удалось преобразовать данные в json")
 		w.WriteHeader(500)
@@ -89,6 +98,8 @@ func PostOrder(w http.ResponseWriter, r *http.Request) {
 	w.Write(m)
 }
 func PutOrder(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.ParseInt(vars["id"], 10, 64)
 	defer r.Body.Close()
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -96,30 +107,50 @@ func PutOrder(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(408)
 		return
 	}
-	var res types.Order
+	var res types.Id
 	err = json.Unmarshal(b, &res)
 	if err != nil {
 		fmt.Println(err, "ошибка unmarshal изменения заказа")
 		w.WriteHeader(500)
 		return
 	}
-	id, err := database.NewOrder(res)
+	res.IdOrder = id
+	err = database.ChangeOrder(res)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных изменения заказа")
 		w.WriteHeader(500)
 		return
 	}
-	if id == 0 {
-		fmt.Println("введен некоректный номер ордера для изменения")
-		w.WriteHeader(404)
+	var result types.Order
+	result, err = database.ReadOrder(id)
+	if err != nil {
+		fmt.Println(err, "не удалось считать данные ордера из базы данных по ид")
+		w.WriteHeader(500)
 		return
 	}
-	res.IdOrder = id
-	m, err := json.Marshal(res)
+	m, err := json.Marshal(result)
 	if err != nil {
 		fmt.Println(err, "не удалось преобразовать данные в json")
 		w.WriteHeader(500)
 		return
+	}
+	w.WriteHeader(200)
+	w.Write(m)
+}
+func DeleteOrder(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = database.DelOrder(id)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	m, err := json.Marshal(id)
+	if err != nil {
+		fmt.Println(err, "")
 	}
 	w.WriteHeader(200)
 	w.Write(m)
