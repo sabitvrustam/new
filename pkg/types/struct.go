@@ -12,6 +12,7 @@ type Order struct {
 }
 
 type User struct {
+	Id        int64  `json:"id_user"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	MidlName  string `json:"midl_name"`

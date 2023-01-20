@@ -7,16 +7,15 @@ import (
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func ReadMasters() []types.Masters {
+func ReadMasters() (result []types.Masters, err error) {
 	db, err := sql.Open("mysql", pass)
 	if err != nil {
 		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
 	}
 	defer db.Close()
 	res, err := db.Query("SELECT id, l_name, f_name, m_name, n_phone from masters ")
-	var result []types.Masters
 	if err != nil {
-		fmt.Sprintln(err)
+		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице мастеров")
 	}
 	for res.Next() {
 		var resul types.Masters
@@ -26,7 +25,7 @@ func ReadMasters() []types.Masters {
 		}
 		result = append(result, resul)
 	}
-	return result
+	return result, err
 }
 
 func NewMaster(master types.Masters) (id int64, err error) {
