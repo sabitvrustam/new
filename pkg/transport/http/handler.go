@@ -47,8 +47,14 @@ func Handler() {
 	r.HandleFunc("/api/parts/{id:[0-9]+}", api.DeletePart).Methods("DELETE")                  //json удалить запчасть
 	r.HandleFunc("/api/works", api.GetWorks).Methods("GET")                                   //json список работ
 	r.HandleFunc("/api/works", api.PostWork).Methods("POST")                                  //json новая работа
-	r.HandleFunc("/api/works/{id:[0-9]+}", api.PutWork).Methods("PUT")                        //json изменить работу
+	r.HandleFunc("/api/works/c", api.PutWork).Methods("PUT")                                  //json изменить работу
 	r.HandleFunc("/api/works/{id:[0-9]+}", api.DeleteWork).Methods("DELETE")                  // json удалить работу
+	r.HandleFunc("/api/orderparts/{id:[0-9]+}", api.GetOrderParts).Methods("GET")             //json запчасти в заказе
+	r.HandleFunc("/api/orderparts", api.PostOrderParts).Methods("POST")                       //json добавить запчасти к заказу
+	r.HandleFunc("/api/orderparts/{id:[0-9]+}", api.DeleteOrderParts).Methods("DELETE")       //json удалить запчасть с заказа
+	r.HandleFunc("/api/orderworks/{id:[0-9]+}", api.GetOrderWorks).Methods("GET")             //json работы в заказе
+	r.HandleFunc("/api/orderworks", api.PostOrderWorks).Methods("POST")                       //json добавить работу к заказу
+	r.HandleFunc("/api/orderworks/{id:[0-9]+}", api.DeleteOrderWorks).Methods("DELETE")       //json удалить работу из заказа
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./web/static"))))
 	fmt.Println("Server is listening...")
 	http.ListenAndServe(":8080", r)

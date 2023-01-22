@@ -56,3 +56,17 @@ type Master struct {
 	MidlName  string `json:"midl_name"`
 	Phone     string `json:"phone"`
 }
+type OrderParts struct {
+	Id        int64  `json:"id"`
+	IdOrder   int64  `json:"id_order"`
+	IdPart    int64  `json:"id_work"`
+	PartName  string `json:"work_name"`
+	PartPrice string `json:"work_price"`
+}
+type OrderWorks struct {
+	Id        int64  `json:"id"`
+	IdOrder   int64  `json:"id_order"`
+	IdWork    int64  `json:"id_work"`
+	WorkName  string `json:"work_name"`
+	WorkPrice string `json:"work_price"`
+}
