@@ -4,108 +4,68 @@ import (
 	"database/sql"
 	"fmt"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func ReadDevices() (result []types.Device, err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
-	}
-	defer db.Close()
-	res, err := db.Query("SELECT id, type, brand, model, sn from device ")
-	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице устройств")
-	}
-	for res.Next() {
-		var resul types.Device
-		err = res.Scan(&resul.Id, &resul.TypeEquipment, &resul.Brand, &resul.Model, &resul.Sn)
-		if err != nil {
-			fmt.Println(err)
-		}
-		result = append(result, resul)
-	}
-	return result, err
+type Device struct {
+	db *sql.DB
 }
 
-func ReadDevicesSearch(sn string) (result []types.Device, err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
-	}
-	defer db.Close()
-	res, err := db.Query("SELECT id, type, brand, model, sn from device WHERE sn = ? ", sn)
-	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице мастеров")
-	}
-	for res.Next() {
-		var resul types.Device
-		err = res.Scan(&resul.Id, &resul.TypeEquipment, &resul.Brand, &resul.Model, &resul.Sn)
-		if err != nil {
-			fmt.Println(err)
-		}
-		result = append(result, resul)
-	}
-	return result, err
-}
-func ReadDevice(id int64) (result []types.Device, err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы устройств", err)
-	}
-	defer db.Close()
-	res, err := db.Query("SELECT id, type, brand, model, sn from device WHERE id = ? ", id)
-	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице устройств")
-	}
-	for res.Next() {
-		var resul types.Device
-		err = res.Scan(&resul.Id, &resul.TypeEquipment, &resul.Brand, &resul.Model, &resul.Sn)
-		if err != nil {
-			fmt.Println(err)
-		}
-		result = append(result, resul)
-	}
-	return result, err
+func NewDevice(db *sql.DB) *Device {
+	return &Device{db: db}
 }
 
-func NewDevice(device types.Device) (id int64, err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы мастеров", err)
+func (d *Device) ReadDevices(id int64, sn string) (results []types.Device, err error) {
+	var res *sql.Rows
+	devices := sq.Select(" id, type, brand, model, sn").From("device")
+	activeId := devices.Where(sq.Eq{"id": id})
+	activeSN := devices.Where(sq.Eq{"sn": sn})
+	if id == 0 && sn == "" {
+		res, err = devices.RunWith(d.db).Query()
 	}
-	defer db.Close()
-	res, err := db.Exec("INSERT INTO `device` (type, brand, model, sn) VALUE (?, ?, ?, ?)", device.TypeEquipment, device.Brand, device.Model, device.Sn)
+	if id != 0 && sn == "" {
+		res, err = activeId.RunWith(d.db).Query()
+	}
+	if id == 0 && sn != "" {
+		res, err = activeSN.RunWith(d.db).Query()
+	}
+	if err != nil {
+		fmt.Println("upsss", err)
+		return
+	}
+	for res.Next() {
+		var resul types.Device
+		err = res.Scan(&resul.Id, &resul.TypeEquipment, &resul.Brand, &resul.Model, &resul.Sn)
+		if err != nil {
+			fmt.Println(err)
+		}
+		results = append(results, resul)
+	}
+	return results, err
+}
+
+func (d *Device) NewDevice1(device types.Device) (id int64, err error) {
+	res, err := d.db.Exec("INSERT INTO `device` (type, brand, model, sn) VALUE (?, ?, ?, ?)", device.TypeEquipment, device.Brand, device.Model, device.Sn)
 	if err != nil {
 		fmt.Println("не удалось записать новую запчасть в базу данных", err)
 		return 0, err
 	}
 	id, err = res.LastInsertId()
-
 	return id, err
-
 }
-func ChangDevice(device types.Device) (err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных с таблицы клиентов", err)
-	}
-	defer db.Close()
-	_, err = db.Query("UPDATE `device` SET `type` = ?, `brand` = ?, `model` = ?, `sn` = ? WHERE `id` = ?", device.TypeEquipment, device.Brand, device.Model, device.Sn, device.Id)
+
+func (d *Device) ChangDevice(device types.Device) (err error) {
+	_, err = d.db.Query("UPDATE `device` SET `type` = ?, `brand` = ?, `model` = ?, `sn` = ? WHERE `id` = ?", device.TypeEquipment, device.Brand, device.Model, device.Sn, device.Id)
 	if err != nil {
 		fmt.Println("не удалось записать новую запчасть в базу данных", err)
 		return err
 	}
-
 	return err
-
 }
-func DelDevice(id int64) error {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
-	}
-	_, err = db.Query("DELETE FROM `device` WHERE `id`=?", id)
+
+func (d *Device) DelDevice(id int64) error {
+	_, err := d.db.Query("DELETE FROM `device` WHERE `id`=?", id)
 	if err != nil {
 		fmt.Println(err, "не удалось записать статус ")
 	}

@@ -15,8 +15,7 @@ type Templates struct {
 	Works           *template.Template
 }
 
-func NewTemplates() Templates {
-	var t Templates
+func NewTemplates() (t Templates) {
 	tpl, err := template.ParseFiles("web/html/header.html", "web/html/index.html", "web/html/footer.html")
 	t.Main = tpl
 	if err != nil {

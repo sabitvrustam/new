@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,8 +13,17 @@ import (
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func GetDevices(w http.ResponseWriter, r *http.Request) {
-	result, err := database.ReadDevices()
+type DeviceAPI struct {
+	db     *sql.DB
+	device *database.Device
+}
+
+func NewDeviceAPI(db *sql.DB) *DeviceAPI {
+	return &DeviceAPI{db: db, device: database.NewDevice(db)}
+}
+
+func (a *DeviceAPI) GetDevices(w http.ResponseWriter, r *http.Request) {
+	result, err := a.device.ReadDevices(0, "")
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных считывание устройств")
 		w.WriteHeader(500)
@@ -27,10 +37,10 @@ func GetDevices(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func GetDevicesSearch(w http.ResponseWriter, r *http.Request) {
+func (a *DeviceAPI) GetDevicesSearch(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	sn := vars["sn"]
-	result, err := database.ReadDevicesSearch(sn)
+	result, err := a.device.ReadDevices(0, sn)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных считывание устройств")
 		w.WriteHeader(500)
@@ -45,13 +55,13 @@ func GetDevicesSearch(w http.ResponseWriter, r *http.Request) {
 	w.Write(m)
 
 }
-func GetDevice(w http.ResponseWriter, r *http.Request) {
+func (a DeviceAPI) GetDevice(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
 		fmt.Println(err)
 	}
-	result, err := database.ReadDevice(id)
+	result, err := a.device.ReadDevices(id, "")
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных считывание устройств")
 		w.WriteHeader(500)
@@ -66,7 +76,7 @@ func GetDevice(w http.ResponseWriter, r *http.Request) {
 	w.Write(m)
 }
 
-func PostDevice(w http.ResponseWriter, r *http.Request) {
+func (a *DeviceAPI) PostDevice(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -81,7 +91,7 @@ func PostDevice(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	result.Id, err = database.NewDevice(result)
+	result.Id, err = a.device.NewDevice1(result)
 	if err != nil || result.Id == 0 {
 		fmt.Println(err, "ошибка базы данных сохранения нового устройства")
 		w.WriteHeader(500)
@@ -96,7 +106,7 @@ func PostDevice(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func PutDevice(w http.ResponseWriter, r *http.Request) {
+func (a *DeviceAPI) PutDevice(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -116,7 +126,7 @@ func PutDevice(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = database.ChangDevice(result)
+	err = a.device.ChangDevice(result)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных изменение данных устройства")
 		w.WriteHeader(500)
@@ -131,7 +141,7 @@ func PutDevice(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func DeleteDevice(w http.ResponseWriter, r *http.Request) {
+func (a *DeviceAPI) DeleteDevice(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
@@ -139,7 +149,7 @@ func DeleteDevice(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
-	err = database.DelDevice(id)
+	err = a.device.DelDevice(id)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных удаление устройства")
 		w.WriteHeader(500)

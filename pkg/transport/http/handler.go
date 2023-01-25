@@ -1,6 +1,7 @@
 package http
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -8,11 +9,11 @@ import (
 	"github.com/sabitvrustam/new/pkg/transport/http/api"
 )
 
-func Handler() {
+func StartHandler(db *sql.DB) {
 
 	t := NewTemplates()
 	r := mux.NewRouter()
-
+	deviceAPI := api.NewDeviceAPI(db)
 	r.HandleFunc("/", t.indexPage)
 	r.HandleFunc("/order/new", t.newOrderPage)
 	r.HandleFunc("/order/status", t.statusOrderPage)
@@ -26,12 +27,12 @@ func Handler() {
 	r.HandleFunc("/api/users", api.PostUser).Methods("POST")                                  //json новый клиент
 	r.HandleFunc("/api/users/{id:[0-9]+}", api.PutUser).Methods("PUT")                        //json изменить данные клиента
 	r.HandleFunc("/api/users/{id:[0-9]+}", api.DeleteUser).Methods("DELETE")                  //json удалить клиента
-	r.HandleFunc("/api/device", api.GetDevices).Methods("GET")                                //json список устройств
-	r.HandleFunc("/api/device/search/{sn}", api.GetDevicesSearch).Methods("GET")              //json поиск устройства
-	r.HandleFunc("/api/device/{id:[0-9]+}", api.GetDevice).Methods("GET")                     //json статус устройства
-	r.HandleFunc("/api/device", api.PostDevice).Methods("POST")                               //json новое устройство
-	r.HandleFunc("/api/device/{id:[0-9]+}", api.PutDevice).Methods("PUT")                     //json изменение устройства
-	r.HandleFunc("/api/device/{id:[0-9]+}", api.DeleteDevice).Methods("DELETE")               //json удаление устройства
+	r.HandleFunc("/api/device", deviceAPI.GetDevices).Methods("GET")                          //json список устройств
+	r.HandleFunc("/api/device/search/{sn}", deviceAPI.GetDevicesSearch).Methods("GET")        //json поиск устройства
+	r.HandleFunc("/api/device/{id:[0-9]+}", deviceAPI.GetDevice).Methods("GET")               //json статус устройства
+	r.HandleFunc("/api/device", deviceAPI.PostDevice).Methods("POST")                         //json новое устройство
+	r.HandleFunc("/api/device/{id:[0-9]+}", deviceAPI.PutDevice).Methods("PUT")               //json изменение устройства
+	r.HandleFunc("/api/device/{id:[0-9]+}", deviceAPI.DeleteDevice).Methods("DELETE")         //json удаление устройства
 	r.HandleFunc("/api/order/{limit:[0-9]+}/{offset:[0-9]+}", api.GetOrders).Methods("get")   //json список заказов
 	r.HandleFunc("/api/order", api.PostOrder).Methods("POST")                                 //json новый заказ
 	r.HandleFunc("/api/order/{id:[0-9]+}", api.GetOrder).Methods("GET")                       //json статус заказа

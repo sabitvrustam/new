@@ -7,8 +7,13 @@ import (
 )
 
 func main() {
+
+	db, err := database.MySqlConnect()
+	if err != nil {
+		panic(err)
+	}
+	database.Migrate(db)
 	go telegram.Tgbot()
-	http.Handler()
-	go database.DbTest()
+	http.StartHandler(db)
 
 }
