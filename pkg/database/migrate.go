@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
+	log "github.com/sirupsen/logrus"
 )
 
 func Migrate(db *sql.DB) {
@@ -29,12 +30,6 @@ func Migrate(db *sql.DB) {
 		if err != nil {
 			fmt.Println(err, "не удалось выполнить команду mysql создания базы данных")
 		}
-		var pass string = fmt.Sprintf("%s:%s@tcp(127.0.0.1)/my_service", dbuser, dbpass)
-		db, err := sql.Open("mysql", pass)
-		if err != nil {
-			fmt.Println(err, "не удалось подключится к базе данных my_service")
-		}
-		defer db.Close()
 		_, err = db.Query("CREATE TABLE `users` ( " +
 			"`id` int NOT NULL AUTO_INCREMENT, " +
 			"`l_name` varchar(20) NOT NULL, " +
@@ -174,6 +169,6 @@ func Migrate(db *sql.DB) {
 		}
 
 	} else {
-		fmt.Println("база данных существует")
+		log.Info("база данных существует")
 	}
 }

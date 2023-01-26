@@ -9,21 +9,21 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/sabitvrustam/new/pkg/database"
+	"github.com/sabitvrustam/new/pkg/database/devices"
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
 type DeviceAPI struct {
 	db     *sql.DB
-	device *database.Device
+	device *devices.Device
 }
 
 func NewDeviceAPI(db *sql.DB) *DeviceAPI {
-	return &DeviceAPI{db: db, device: database.NewDevice(db)}
+	return &DeviceAPI{db: db, device: devices.NewDevice(db)}
 }
 
 func (a *DeviceAPI) GetDevices(w http.ResponseWriter, r *http.Request) {
-	result, err := a.device.ReadDevices(0, "")
+	result, err := a.device.DevicesRead(0, "")
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных считывание устройств")
 		w.WriteHeader(500)
@@ -40,7 +40,7 @@ func (a *DeviceAPI) GetDevices(w http.ResponseWriter, r *http.Request) {
 func (a *DeviceAPI) GetDevicesSearch(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	sn := vars["sn"]
-	result, err := a.device.ReadDevices(0, sn)
+	result, err := a.device.DevicesRead(0, sn)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных считывание устройств")
 		w.WriteHeader(500)
@@ -61,7 +61,7 @@ func (a DeviceAPI) GetDevice(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	result, err := a.device.ReadDevices(id, "")
+	result, err := a.device.DevicesRead(id, "")
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных считывание устройств")
 		w.WriteHeader(500)
@@ -91,7 +91,7 @@ func (a *DeviceAPI) PostDevice(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	result.Id, err = a.device.NewDevice1(result)
+	result.Id, err = a.device.DeviceWrite(result)
 	if err != nil || result.Id == 0 {
 		fmt.Println(err, "ошибка базы данных сохранения нового устройства")
 		w.WriteHeader(500)
@@ -126,7 +126,7 @@ func (a *DeviceAPI) PutDevice(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = a.device.ChangDevice(result)
+	err = a.device.DeviceCange(result)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных изменение данных устройства")
 		w.WriteHeader(500)
@@ -149,7 +149,7 @@ func (a *DeviceAPI) DeleteDevice(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
-	err = a.device.DelDevice(id)
+	err = a.device.DeviceDelete(id)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных удаление устройства")
 		w.WriteHeader(500)

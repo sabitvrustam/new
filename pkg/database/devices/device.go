@@ -1,4 +1,4 @@
-package database
+package devices
 
 import (
 	"database/sql"
@@ -16,7 +16,7 @@ func NewDevice(db *sql.DB) *Device {
 	return &Device{db: db}
 }
 
-func (d *Device) ReadDevices(id int64, sn string) (results []types.Device, err error) {
+func (d *Device) DevicesRead(id int64, sn string) (results []types.Device, err error) {
 	var res *sql.Rows
 	devices := sq.Select(" id, type, brand, model, sn").From("device")
 	activeId := devices.Where(sq.Eq{"id": id})
@@ -45,27 +45,32 @@ func (d *Device) ReadDevices(id int64, sn string) (results []types.Device, err e
 	return results, err
 }
 
-func (d *Device) NewDevice1(device types.Device) (id int64, err error) {
-	res, err := d.db.Exec("INSERT INTO `device` (type, brand, model, sn) VALUE (?, ?, ?, ?)", device.TypeEquipment, device.Brand, device.Model, device.Sn)
+func (d *Device) DeviceWrite(device types.Device) (id int64, err error) {
+	res := sq.Insert("device").
+		Columns("type", "brand", "model", "sn").
+		Values(device.TypeEquipment, device.Brand, device.Model, device.Sn)
+	result, err := res.RunWith(d.db).Exec()
 	if err != nil {
-		fmt.Println("не удалось записать новую запчасть в базу данных", err)
-		return 0, err
+		fmt.Println("nooo")
 	}
-	id, err = res.LastInsertId()
+	id, err = result.LastInsertId()
 	return id, err
 }
 
-func (d *Device) ChangDevice(device types.Device) (err error) {
-	_, err = d.db.Query("UPDATE `device` SET `type` = ?, `brand` = ?, `model` = ?, `sn` = ? WHERE `id` = ?", device.TypeEquipment, device.Brand, device.Model, device.Sn, device.Id)
-	if err != nil {
-		fmt.Println("не удалось записать новую запчасть в базу данных", err)
-		return err
-	}
+func (d *Device) DeviceCange(device types.Device) (err error) {
+	res := sq.Update("device").
+		Set("type", device.TypeEquipment).
+		Set("brand", device.Brand).
+		Set("model", device.Model).
+		Set("sn", device.Sn).
+		Where(sq.Eq{"id": device.Id})
+	_, err = res.RunWith(d.db).Exec()
 	return err
 }
 
-func (d *Device) DelDevice(id int64) error {
-	_, err := d.db.Query("DELETE FROM `device` WHERE `id`=?", id)
+func (d *Device) DeviceDelete(id int64) (err error) {
+	res := sq.Delete("device").Where(sq.Eq{"id": id})
+	_, err = res.RunWith(d.db).Exec()
 	if err != nil {
 		fmt.Println(err, "не удалось записать статус ")
 	}

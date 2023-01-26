@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -8,12 +9,21 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/sabitvrustam/new/pkg/database"
+	"github.com/sabitvrustam/new/pkg/database/works"
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func GetWorks(w http.ResponseWriter, r *http.Request) {
-	result := database.ReadWoeks()
+type WorkAPI struct {
+	db   *sql.DB
+	work *works.Work
+}
+
+func NewWork(db *sql.DB) *WorkAPI {
+	return &WorkAPI{db: db, work: works.NewWork(db)}
+}
+
+func (a *WorkAPI) GetWorks(w http.ResponseWriter, r *http.Request) {
+	result := a.work.ReadWoeks()
 	m, err := json.Marshal(result)
 	if err != nil {
 		fmt.Println(err, "")
@@ -23,7 +33,7 @@ func GetWorks(w http.ResponseWriter, r *http.Request) {
 	w.Write(m)
 }
 
-func PostWork(w http.ResponseWriter, r *http.Request) {
+func (a *WorkAPI) PostWork(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
 	var res types.Work
@@ -31,7 +41,7 @@ func PostWork(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	id, err := database.WriteWork(res)
+	id, err := a.work.WriteWork(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -43,7 +53,7 @@ func PostWork(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func PutWork(w http.ResponseWriter, r *http.Request) {
+func (a *WorkAPI) PutWork(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
 	var res types.Work
@@ -57,7 +67,7 @@ func PutWork(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	res.Id = id
-	err = database.ChangeWork(res)
+	err = a.work.ChangeWork(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -71,13 +81,13 @@ func PutWork(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func DeleteWork(w http.ResponseWriter, r *http.Request) {
+func (a *WorkAPI) DeleteWork(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = database.DeleteWork(id)
+	err = a.work.DeleteWork(id)
 	if err != nil {
 		fmt.Println(err)
 	}

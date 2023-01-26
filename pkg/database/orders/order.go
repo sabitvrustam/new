@@ -1,27 +1,26 @@
-package database
+package orders
 
 import (
 	"database/sql"
 	"fmt"
-	"os"
 
+	//sq "github.com/Masterminds/squirrel"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/sabitvrustam/new/pkg/types"
+	log "github.com/sirupsen/logrus"
 )
 
-var dbuser string = os.Getenv("bduser")
-var dbpass string = os.Getenv("bdpass")
-var pass string = fmt.Sprintf("%s:%s@tcp(127.0.0.1)/my_service", dbuser, dbpass)
+type Order struct {
+	db *sql.DB
+}
 
-func ReadOrders(limit string, offset string) (Order []types.Order, err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для получения списка заказов", err)
-		return
-	}
-	defer db.Close()
+func NewOrder(db *sql.DB) *Order {
+	return &Order{db: db}
+}
+
+func (d *Order) ReadOrders(limit string, offset string) (Order []types.Order, err error) {
 	var result types.Order
-	res, err := db.Query("SELECT o.id, u.id, u.f_name, u.l_name, u.m_name, "+
+	res, err := d.db.Query("SELECT o.id, u.id, u.f_name, u.l_name, u.m_name, "+
 		"u.n_phone, d.id, d.type, d.brand, d.model, d.sn, m.id, m.f_name, m.l_name, "+
 		"m.m_name, m.n_phone, s.o_status FROM orders AS o "+
 		"JOIN users AS u ON o.id_users = u.id "+
@@ -30,8 +29,9 @@ func ReadOrders(limit string, offset string) (Order []types.Order, err error) {
 		"JOIN status AS s ON o.id_status  = s.id "+
 		"ORDER BY o.id DESC  LIMIT ? OFFSET ?", limit, offset)
 	if err != nil {
-		fmt.Sprintln("не удалось считать данные заказа из базы данных", err)
+		log.Error("не удалось считать данные заказа из базы данных", err)
 	}
+	log.Info("hello")
 	for res.Next() {
 		err = res.Scan(&result.IdOrder, &result.User.Id, &result.User.FirstName, &result.User.LastName,
 			&result.User.MidlName, &result.User.Phone, &result.Device.Id, &result.TypeEquipment,
@@ -46,15 +46,9 @@ func ReadOrders(limit string, offset string) (Order []types.Order, err error) {
 
 }
 
-func ReadOrder(id int64) (Order types.Order, err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
-		return
-	}
-	defer db.Close()
+func (d *Order) ReadOrder(id int64) (Order types.Order, err error) {
 	var result types.Order
-	res, err := db.Query("SELECT o.id, u.id, u.f_name, u.l_name, u.m_name, "+
+	res, err := d.db.Query("SELECT o.id, u.id, u.f_name, u.l_name, u.m_name, "+
 		"u.n_phone, d.id, d.type, d.brand, d.model, d.sn, m.id, m.f_name, m.l_name, "+
 		"m.m_name, m.n_phone, s.o_status FROM orders AS o "+
 		"JOIN users AS u ON o.id_users = u.id "+
@@ -76,13 +70,8 @@ func ReadOrder(id int64) (Order types.Order, err error) {
 	}
 	return result, err
 }
-func NewOrder(order types.Id) (id int64, err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
-	}
-	defer db.Close()
-	res, err := db.Exec("INSERT INTO `orders` (`id_users`, `id_device`, `id_masters`, `id_status`) VALUE (?, ?, ?, ?)", order.IdUser, order.IdDevice, order.IdMaster, order.IdStatus)
+func (d *Order) NewOrder1(order types.Id) (id int64, err error) {
+	res, err := d.db.Exec("INSERT INTO `orders` (`id_users`, `id_device`, `id_masters`, `id_status`) VALUE (?, ?, ?, ?)", order.IdUser, order.IdDevice, order.IdMaster, order.IdStatus)
 	if err != nil {
 		fmt.Println("не удалось записать ключи в таблицу заказов", err)
 		return 0, err
@@ -90,13 +79,8 @@ func NewOrder(order types.Id) (id int64, err error) {
 	id, err = res.LastInsertId()
 	return id, err
 }
-func ChangeOrder(order types.Id) (err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
-	}
-	defer db.Close()
-	_, err = db.Exec("UPDATE `orders`"+
+func (d *Order) ChangeOrder(order types.Id) (err error) {
+	_, err = d.db.Exec("UPDATE `orders`"+
 		"SET `id_users` = ?, `id_device` = ?, `id_masters` = ?, `id_status` = ?"+
 		" WHERE `id` = ?", order.IdUser, order.IdDevice, order.IdMaster, order.IdStatus, order.IdOrder)
 	if err != nil {
@@ -104,13 +88,8 @@ func ChangeOrder(order types.Id) (err error) {
 	}
 	return
 }
-func DelOrder(id int64) (err error) {
-	db, err := sql.Open("mysql", pass)
-	if err != nil {
-		fmt.Println("не удалось подключиться к базе данных для считывния данных для телеграм бота", err)
-	}
-	defer db.Close()
-	_, err = db.Query("DELETE FROM `orders` WHERE `id`=?", id)
+func (d *Order) DelOrder(id int64) (err error) {
+	_, err = d.db.Query("DELETE FROM `orders` WHERE `id`=?", id)
 	if err != nil {
 		fmt.Println(err, "не удалось записать статус ")
 	}

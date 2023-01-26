@@ -8,11 +8,10 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/sabitvrustam/new/pkg/database"
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func GetOrderParts(w http.ResponseWriter, r *http.Request) {
+func (a *OrderAPI) GetOrderParts(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
@@ -20,7 +19,7 @@ func GetOrderParts(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
-	result, err := database.ReadOrderParts(id)
+	result, err := a.order.ReadOrderParts(id)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных считывание мастеров")
 		w.WriteHeader(500)
@@ -35,7 +34,7 @@ func GetOrderParts(w http.ResponseWriter, r *http.Request) {
 	w.Write(m)
 }
 
-func PostOrderParts(w http.ResponseWriter, r *http.Request) {
+func (a *OrderAPI) PostOrderParts(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -50,13 +49,13 @@ func PostOrderParts(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	result.Id, err = database.NewOrderParts(result)
+	result.Id, err = a.order.NewOrderParts(result)
 	if err != nil || result.Id == 0 {
 		fmt.Println(err, "ошибка базы данных сохранения нового пользователя")
 		w.WriteHeader(500)
 		return
 	}
-	resul, err := database.ReadOrderPart(result.Id)
+	resul, err := a.order.ReadOrderPart(result.Id)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных считывание мастеров")
 		w.WriteHeader(500)
@@ -71,7 +70,7 @@ func PostOrderParts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func DeleteOrderParts(w http.ResponseWriter, r *http.Request) {
+func (a *OrderAPI) DeleteOrderParts(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
@@ -79,7 +78,7 @@ func DeleteOrderParts(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
-	err = database.DelOrderParts(id)
+	err = a.order.DelOrderParts(id)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных удаление мастера")
 		w.WriteHeader(500)

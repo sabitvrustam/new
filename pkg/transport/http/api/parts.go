@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -8,12 +9,21 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/sabitvrustam/new/pkg/database"
+	"github.com/sabitvrustam/new/pkg/database/parts"
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func GetParts(w http.ResponseWriter, r *http.Request) {
-	result := database.ReadParts()
+type PartAPI struct {
+	db   *sql.DB
+	part *parts.Part
+}
+
+func NewPartAPI(db *sql.DB) *PartAPI {
+	return &PartAPI{db: db, part: parts.NewPart(db)}
+}
+
+func (a *PartAPI) GetParts(w http.ResponseWriter, r *http.Request) {
+	result := a.part.ReadParts()
 	m, err := json.Marshal(result)
 	if err != nil {
 		fmt.Println(err, "")
@@ -23,7 +33,7 @@ func GetParts(w http.ResponseWriter, r *http.Request) {
 	w.Write(m)
 }
 
-func PostParts(w http.ResponseWriter, r *http.Request) {
+func (a *PartAPI) PostParts(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
 	var res types.Part
@@ -31,7 +41,7 @@ func PostParts(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	id, err := database.NewPart(res)
+	id, err := a.part.NewPart1(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -43,7 +53,7 @@ func PostParts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func PutPart(w http.ResponseWriter, r *http.Request) {
+func (a *PartAPI) PutPart(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
 	var res types.Part
@@ -57,7 +67,7 @@ func PutPart(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	res.Id = id
-	err = database.ChangePart(res)
+	err = a.part.ChangePart(res)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -69,13 +79,13 @@ func PutPart(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func DeletePart(w http.ResponseWriter, r *http.Request) {
+func (a *PartAPI) DeletePart(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = database.DeletePart(id)
+	err = a.part.DeletePart(id)
 	if err != nil {
 		fmt.Println(err)
 	}

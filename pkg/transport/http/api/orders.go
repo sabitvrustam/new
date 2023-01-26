@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -8,15 +9,24 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/sabitvrustam/new/pkg/database"
+	"github.com/sabitvrustam/new/pkg/database/orders"
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func GetOrders(w http.ResponseWriter, r *http.Request) {
+type OrderAPI struct {
+	db    *sql.DB
+	order *orders.Order
+}
+
+func NewOrderAPI(db *sql.DB) *OrderAPI {
+	return &OrderAPI{db: db, order: orders.NewOrder(db)}
+}
+
+func (a *OrderAPI) GetOrders(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	limit := vars["limit"]
 	offset := vars["offset"]
-	result, err := database.ReadOrders(limit, offset)
+	result, err := a.order.ReadOrders(limit, offset)
 	if err != nil {
 		fmt.Println(err, "не удалось считать данные ордеров колличество на странице"+limit+"offset"+offset)
 		w.WriteHeader(500)
@@ -33,10 +43,10 @@ func GetOrders(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetOrder(w http.ResponseWriter, r *http.Request) {
+func (a *OrderAPI) GetOrder(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.ParseInt(vars["id"], 10, 64)
-	result, err := database.ReadOrder(id)
+	result, err := a.order.ReadOrder(id)
 	if err != nil {
 		fmt.Println(err, "не удалось считать данные ордера из базы данных по ид")
 		w.WriteHeader(500)
@@ -58,7 +68,7 @@ func GetOrder(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func PostOrder(w http.ResponseWriter, r *http.Request) {
+func (a *OrderAPI) PostOrder(w http.ResponseWriter, r *http.Request) {
 	var result types.Id
 	defer r.Body.Close()
 	b, err := io.ReadAll(r.Body)
@@ -73,7 +83,7 @@ func PostOrder(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	id, err := database.NewOrder(result)
+	id, err := a.order.NewOrder1(result)
 	if err != nil || id == 0 {
 		fmt.Println(err, "ошибка базы данных не удалось записать новый заказ")
 		w.WriteHeader(500)
@@ -81,7 +91,7 @@ func PostOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var resul types.Order
-	resul, err = database.ReadOrder(id)
+	resul, err = a.order.ReadOrder(id)
 	if err != nil {
 		fmt.Println(err, "не удалось считать данные ордера из базы данных по ид")
 		w.WriteHeader(500)
@@ -97,7 +107,7 @@ func PostOrder(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func PutOrder(w http.ResponseWriter, r *http.Request) {
+func (a *OrderAPI) PutOrder(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.ParseInt(vars["id"], 10, 64)
 	defer r.Body.Close()
@@ -115,14 +125,14 @@ func PutOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	res.IdOrder = id
-	err = database.ChangeOrder(res)
+	err = a.order.ChangeOrder(res)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных изменения заказа")
 		w.WriteHeader(500)
 		return
 	}
 	var result types.Order
-	result, err = database.ReadOrder(id)
+	result, err = a.order.ReadOrder(id)
 	if err != nil {
 		fmt.Println(err, "не удалось считать данные ордера из базы данных по ид")
 		w.WriteHeader(500)
@@ -137,13 +147,13 @@ func PutOrder(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func DeleteOrder(w http.ResponseWriter, r *http.Request) {
+func (a *OrderAPI) DeleteOrder(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = database.DelOrder(id)
+	err = a.order.DelOrder(id)
 	if err != nil {
 		fmt.Println(err)
 	}

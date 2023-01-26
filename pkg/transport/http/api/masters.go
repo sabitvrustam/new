@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -8,12 +9,21 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/sabitvrustam/new/pkg/database"
+	"github.com/sabitvrustam/new/pkg/database/masters"
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func GetMasters(w http.ResponseWriter, r *http.Request) {
-	result, err := database.ReadMasters()
+type MasterAPI struct {
+	db     *sql.DB
+	master *masters.Master
+}
+
+func NewMasterAPI(db *sql.DB) *MasterAPI {
+	return &MasterAPI{db: db, master: masters.NewMaster(db)}
+}
+
+func (a *MasterAPI) GetMasters(w http.ResponseWriter, r *http.Request) {
+	result, err := a.master.MastersRead()
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных считывание мастеров")
 		w.WriteHeader(500)
@@ -28,7 +38,7 @@ func GetMasters(w http.ResponseWriter, r *http.Request) {
 	w.Write(m)
 }
 
-func PostMasters(w http.ResponseWriter, r *http.Request) {
+func (a *MasterAPI) PostMasters(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -43,7 +53,7 @@ func PostMasters(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	result.Id, err = database.NewMaster(result)
+	result.Id, err = a.master.MastersWrite(result)
 	if err != nil || result.Id == 0 {
 		fmt.Println(err, "ошибка базы данных сохранения нового пользователя")
 		w.WriteHeader(500)
@@ -58,7 +68,7 @@ func PostMasters(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func PutMasters(w http.ResponseWriter, r *http.Request) {
+func (a *MasterAPI) PutMasters(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -78,7 +88,7 @@ func PutMasters(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = database.ChangMaster(result)
+	err = a.master.MastersChange(result)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных изменение данных масера")
 		w.WriteHeader(500)
@@ -93,7 +103,7 @@ func PutMasters(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Write(m)
 }
-func DeleteMasters(w http.ResponseWriter, r *http.Request) {
+func (a *MasterAPI) DeleteMasters(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
@@ -101,7 +111,7 @@ func DeleteMasters(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
-	err = database.DeleteMaster(id)
+	err = a.master.MastersDelete(id)
 	if err != nil {
 		fmt.Println(err, "ошибка базы данных удаление мастера")
 		w.WriteHeader(500)
