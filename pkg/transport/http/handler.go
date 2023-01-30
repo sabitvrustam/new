@@ -6,19 +6,19 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/sabitvrustam/new/pkg/transport/http/api"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
-func StartHandler(db *sql.DB) {
+func StartHandler(db *sql.DB, log *logrus.Logger) {
 
-	t := NewTemplates()
+	t := NewTemplates(log)
 	r := mux.NewRouter()
-	deviceAPI := api.NewDeviceAPI(db)
-	masterAPI := api.NewMasterAPI(db)
-	orderAPI := api.NewOrderAPI(db)
-	userAPI := api.NewUsersAPI(db)
-	partAPI := api.NewPartAPI(db)
-	workAPI := api.NewWork(db)
+	deviceAPI := api.NewDeviceAPI(db, log)
+	masterAPI := api.NewMasterAPI(db, log)
+	orderAPI := api.NewOrderAPI(db, log)
+	userAPI := api.NewUsersAPI(db, log)
+	partAPI := api.NewPartAPI(db, log)
+	workAPI := api.NewWork(db, log)
 	r.HandleFunc("/", t.indexPage)
 	r.HandleFunc("/order/new", t.newOrderPage)
 	r.HandleFunc("/order/status", t.statusOrderPage)

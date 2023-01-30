@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
-func MySqlConnect() (db *sql.DB, err error) {
+func MySqlConnect(log *logrus.Logger) (db *sql.DB, err error) {
 
 	var dbuser string = os.Getenv("bduser")
 	var dbpass string = os.Getenv("bdpass")

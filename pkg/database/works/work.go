@@ -2,58 +2,73 @@ package works
 
 import (
 	"database/sql"
-	"fmt"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/sabitvrustam/new/pkg/types"
+	"github.com/sirupsen/logrus"
 )
 
 type Work struct {
-	db *sql.DB
+	db  *sql.DB
+	log *logrus.Logger
 }
 
-func NewWork(db *sql.DB) *Work {
-	return &Work{db: db}
+func NewWork(db *sql.DB, log *logrus.Logger) *Work {
+	return &Work{
+		db:  db,
+		log: log}
 }
 
-func (d *Work) ReadWoeks() (result []types.Work) {
-	res, err := d.db.Query("SELECT id, work_name, work_price from work ")
+func (d *Work) ReadWoeks() (works []types.Work) {
+	sb := sq.Select("id", "work_name", "work_price").From("work")
+	res, err := sb.RunWith(d.db).Query()
 	if err != nil {
-		fmt.Sprintln(err)
+		d.log.Error(err)
 	}
 	for res.Next() {
-		var resul types.Work
-		err = res.Scan(&resul.Id, &resul.WorkName, &resul.WorkPrice)
+		var result types.Work
+		err = res.Scan(&result.Id, &result.WorkName, &result.WorkPrice)
 		if err != nil {
-			fmt.Println(err)
+			d.log.Error(err)
 		}
-		result = append(result, resul)
+		works = append(works, result)
 	}
-
-	return result
+	return works
 }
 
 func (d *Work) WriteWork(newWork types.Work) (id int64, err error) {
-	res, err := d.db.Exec("INSERT INTO `work` (`work_name`, `work_price`) VALUE (?, ?)", newWork.WorkName, newWork.WorkPrice)
+	sb := sq.Insert("work").
+		Columns("work_name", "work_price").
+		Values(newWork.WorkName, newWork.WorkPrice)
+	res, err := sb.RunWith(d.db).Exec()
 	if err != nil {
-		fmt.Println("не удалось записать новую запчасть в базу данных", err)
-		return 0, err
+		d.log.Error("не удалось записать новую запчасть в базу данных", err)
+		return
 	}
 	id, err = res.LastInsertId()
+	if err != nil {
+		d.log.Error(err)
+	}
 	return id, err
 }
 
 func (d *Work) ChangeWork(work types.Work) (err error) {
-	_, err = d.db.Query("UPDATE `work` SET `work_name` = ?, `work_price` = ?  WHERE `id` = ?", work.WorkName, work.WorkPrice, work.Id)
+	sb := sq.Update("work").
+		Set("work_name", work.WorkName).
+		Set("work-price", work.WorkPrice).
+		Where(sq.Eq{"id": work.Id})
+	_, err = sb.RunWith(d.db).Query()
 	if err != nil {
-		fmt.Println("не удалось записать новую запчасть в базу данных", err)
+		d.log.Error("не удалось записать новую запчасть в базу данных", err)
 	}
 	return err
 }
 
 func (d *Work) DeleteWork(id int64) (err error) {
-	_, err = d.db.Query("DELETE FROM `work` WHERE `id`=?", id)
+	sb := sq.Delete("work").Where(sq.Eq{"id": id})
+	_, err = sb.RunWith(d.db).Query()
 	if err != nil {
-		fmt.Println(err, "не удалось записать статус ")
+		d.log.Error(err, "не удалось записать статус ")
 	}
 	return err
 

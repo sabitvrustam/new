@@ -2,92 +2,85 @@ package users
 
 import (
 	"database/sql"
-	"fmt"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/sabitvrustam/new/pkg/types"
+	"github.com/sirupsen/logrus"
 )
 
 type Users struct {
-	db *sql.DB
+	db  *sql.DB
+	log *logrus.Logger
 }
 
-func NewUser(db *sql.DB) *Users {
-	return &Users{db: db}
+func NewUser(db *sql.DB, log *logrus.Logger) *Users {
+	return &Users{
+		db:  db,
+		log: log}
 }
 
-func (d *Users) ReadUsers() (result []types.User, err error) {
-	res, err := d.db.Query("SELECT id, l_name, f_name, m_name, n_phone from users ")
+func (d *Users) ReadUsers(LastName *string, id *int64) (users []types.User, err error) {
+	sb := sq.Select("id", "l_name", "f_name", "m_name", "n_phone").
+		From("Users")
+	if LastName != nil {
+		sb = sb.Where(sq.Eq{"l_name": *LastName})
+	}
+	if id != nil {
+		sb = sb.Where(sq.Eq{"id": *id})
+	}
+	res, err := sb.RunWith(d.db).Query()
 	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице мастеров")
+		d.log.Error(err, "не удалось выполнить запрос селект к таблице мастеров")
 	}
 	for res.Next() {
 		var resul types.User
 		err = res.Scan(&resul.Id, &resul.LastName, &resul.FirstName, &resul.MidlName, &resul.Phone)
 		if err != nil {
-			fmt.Println(err)
+			d.log.Error(err)
 		}
-		result = append(result, resul)
+		users = append(users, resul)
 	}
-	return result, err
-}
-
-func (d *Users) ReadUsersSearch(LastName string) (result []types.User, err error) {
-	res, err := d.db.Query("SELECT id, l_name, f_name, m_name, n_phone from users WHERE f_name = ? ", LastName)
-	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице мастеров")
-	}
-	for res.Next() {
-		var resul types.User
-		err = res.Scan(&resul.Id, &resul.LastName, &resul.FirstName, &resul.MidlName, &resul.Phone)
-		if err != nil {
-			fmt.Println(err)
-		}
-		result = append(result, resul)
-	}
-	return result, err
-}
-
-func (d *Users) ReadUser(id int64) (result []types.User, err error) {
-	res, err := d.db.Query("SELECT id, l_name, f_name, m_name, n_phone from users WHERE id = ? ", id)
-	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице мастеров")
-	}
-	for res.Next() {
-		var resul types.User
-		err = res.Scan(&resul.Id, &resul.LastName, &resul.FirstName, &resul.MidlName, &resul.Phone)
-		if err != nil {
-			fmt.Println(err)
-		}
-		result = append(result, resul)
-	}
-	return result, err
+	return users, err
 }
 
 func (d *Users) NewUser1(user types.User) (id int64, err error) {
-	res, err := d.db.Exec("INSERT INTO `users` (`l_name`, `f_name`, `m_name`, `n_phone` ) VALUE (?, ?, ?, ?)", user.FirstName, user.LastName, user.MidlName, user.Phone)
+	sb := sq.Insert("users").
+		Columns("l_name", "f_name", "m_name", "n_phone").
+		Values(user.FirstName, user.LastName, user.MidlName, user.Phone)
+	res, err := sb.RunWith(d.db).Exec()
 	if err != nil {
-		fmt.Println("не удалось записать новую запчасть в базу данных", err)
+		d.log.Error("не удалось записать новую запчасть в базу данных", err)
 		return 0, err
 	}
 	id, err = res.LastInsertId()
+	if err != nil {
+		d.log.Error(err)
+	}
 	return id, err
 
 }
 
 func (d *Users) ChangUser(user types.User) (err error) {
-	_, err = d.db.Query("UPDATE `users` SET `l_name` = ?, `f_name` = ?, `m_name` = ?, `n_phone` = ? WHERE `id` = ?", user.LastName, user.FirstName, user.MidlName, user.Phone, user.Id)
+	sb := sq.Update("users").
+		Set("l_name", user.LastName).
+		Set("f_name", user.FirstName).
+		Set("m_name", user.MidlName).
+		Set("n_phone", user.Phone).
+		Where(sq.Eq{"id": user.Id})
+	_, err = sb.RunWith(d.db).Query()
 	if err != nil {
-		fmt.Println("не удалось записать новую запчасть в базу данных", err)
-		return err
+		d.log.Error("не удалось записать новую запчасть в базу данных", err)
+		return
 	}
 	return err
 
 }
 
 func (d *Users) DelUser(id int64) (err error) {
-	_, err = d.db.Query("DELETE FROM `users` WHERE `id`=?", id)
+	sb := sq.Delete("users").Where(sq.Eq{"id": id})
+	_, err = sb.RunWith(d.db).Query()
 	if err != nil {
-		fmt.Println(err, "не удалось записать статус ")
+		d.log.Error(err, "не удалось записать статус ")
 	}
 	return err
 }

@@ -1,9 +1,10 @@
 package http
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Templates struct {
@@ -13,57 +14,82 @@ type Templates struct {
 	MakeOrderChange *template.Template
 	Parts           *template.Template
 	Works           *template.Template
+	log             *logrus.Logger
 }
 
-func NewTemplates() (t Templates) {
+func NewTemplates(log *logrus.Logger) (t Templates) {
+
 	tpl, err := template.ParseFiles("web/html/header.html", "web/html/index.html", "web/html/footer.html")
 	t.Main = tpl
 	if err != nil {
-		fmt.Println(err, "не удалось открыть главную страничку")
+		t.log.Error(err, "не удалось открыть главную страничку")
 	}
 	tpl, err = template.ParseFiles("web/html/header.html", "web/html/createPage.html", "web/html/footer.html")
 	t.CteateOrder = tpl
 	if err != nil {
-		fmt.Println(err, "не удалось открыть страничку создания заказа")
+		t.log.Error(err, "не удалось открыть страничку создания заказа")
 	}
 	tpl, err = template.ParseFiles("web/html/header.html", "web/html/userStatus.html", "web/html/footer.html")
 	t.OrderStatus = tpl
 	if err != nil {
-		fmt.Println(err, "Не удалось открыть страницу состояния заказа")
+		t.log.Error(err, "Не удалось открыть страницу состояния заказа")
 	}
 	tpl, err = template.ParseFiles("web/html/header.html", "web/html/makeChangesOrder.html", "web/html/footer.html")
 	t.MakeOrderChange = tpl
 	if err != nil {
-		fmt.Println(err, "не удалось открыть страничку изменения заказа")
+		t.log.Error(err, "не удалось открыть страничку изменения заказа")
 	}
 	tpl, err = template.ParseFiles("web/html/header.html", "web/html/parts.html", "web/html/footer.html")
 	t.Parts = tpl
 	if err != nil {
-		fmt.Println(err, "не удалось открыть страничку с запчастями")
+		t.log.Error(err, "не удалось открыть страничку с запчастями")
 	}
 	tpl, err = template.ParseFiles("web/html/header.html", "web/html/works.html", "web/html/footer.html")
 	t.Works = tpl
 	if err != nil {
-		fmt.Println(err, "не удалось открыть страничку с работами")
+		t.log.Error(err, "не удалось открыть страничку с работами")
 	}
 
 	return t
 }
 func (t *Templates) indexPage(w http.ResponseWriter, r *http.Request) {
-	t.Main.ExecuteTemplate(w, "index", nil)
+	err := t.Main.ExecuteTemplate(w, "index", nil)
+	if err != nil {
+		t.log.Error(err)
+	}
 }
+
 func (t *Templates) newOrderPage(w http.ResponseWriter, r *http.Request) {
-	t.CteateOrder.ExecuteTemplate(w, "createPage", nil)
+	err := t.CteateOrder.ExecuteTemplate(w, "createPage", nil)
+	if err != nil {
+		t.log.Error(err)
+	}
 }
+
 func (t *Templates) statusOrderPage(w http.ResponseWriter, r *http.Request) {
-	t.OrderStatus.ExecuteTemplate(w, "userStatus", nil)
+	err := t.OrderStatus.ExecuteTemplate(w, "userStatus", nil)
+	if err != nil {
+		t.log.Error(err)
+	}
 }
+
 func (t *Templates) makeChangesOrder(w http.ResponseWriter, r *http.Request) {
-	t.MakeOrderChange.ExecuteTemplate(w, "makeChangesOrder", nil)
+	err := t.MakeOrderChange.ExecuteTemplate(w, "makeChangesOrder", nil)
+	if err != nil {
+		t.log.Error(err)
+	}
 }
+
 func (t *Templates) parts(w http.ResponseWriter, r *http.Request) {
-	t.Parts.ExecuteTemplate(w, "parts", nil)
+	err := t.Parts.ExecuteTemplate(w, "parts", nil)
+	if err != nil {
+		t.log.Error(err)
+	}
 }
+
 func (t *Templates) works(w http.ResponseWriter, r *http.Request) {
-	t.Works.ExecuteTemplate(w, "works", nil)
+	err := t.Works.ExecuteTemplate(w, "works", nil)
+	if err != nil {
+		t.log.Error(err)
+	}
 }

@@ -1,40 +1,25 @@
 package orders
 
 import (
-	"fmt"
-
+	sq "github.com/Masterminds/squirrel"
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func (d *Order) ReadOrderWorks(id int64) (result []types.OrderWorks, err error) {
-	res, err := d.db.Query("SELECT ow.id, ow.id_orders, ow.id_work, w.work_name, w.work_price from orders_work AS ow "+
-		"JOIN work AS w ON ow.id_work = w.id "+
-		"WHERE ow.id_orders =?", id)
-	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице устройств")
+func (d *Order) ReadOrderWorks(idOrder int64, id *int64) (result []types.OrderWorks, err error) {
+	sb := sq.Select("ow.id", "ow.id_orders", "ow.id_work", "w.work_name", "w.work_price").
+		From("orders_work AS ow").
+		Join("work AS w ON ow.id_work = w.id")
+	if id != nil {
+		sb = sb.Where(sq.Eq{"ow.id": *id})
+	} else {
+		sb = sb.Where(sq.Eq{"ow.id_orders": idOrder})
 	}
+	res, err := sb.RunWith(d.db).Query()
 	for res.Next() {
 		var resul types.OrderWorks
 		err = res.Scan(&resul.Id, &resul.IdOrder, &resul.IdWork, &resul.WorkName, &resul.WorkPrice)
 		if err != nil {
-			fmt.Println(err)
-		}
-		result = append(result, resul)
-	}
-	return result, err
-}
-func (d *Order) ReadOrderWork(id int64) (result []types.OrderWorks, err error) {
-	res, err := d.db.Query("SELECT ow.id, ow.id_orders, ow.id_work, w.work_name, w.work_price from orders_work AS ow "+
-		"JOIN work AS w ON ow.id_work = w.id "+
-		"WHERE ow.id =?", id)
-	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице устройств")
-	}
-	for res.Next() {
-		var resul types.OrderWorks
-		err = res.Scan(&resul.Id, &resul.IdOrder, &resul.IdWork, &resul.WorkName, &resul.WorkPrice)
-		if err != nil {
-			fmt.Println(err)
+			d.log.Error(err)
 		}
 		result = append(result, resul)
 	}
@@ -42,21 +27,25 @@ func (d *Order) ReadOrderWork(id int64) (result []types.OrderWorks, err error) {
 }
 
 func (d *Order) NewOrderWorks(orderWorks types.OrderWorks) (id int64, err error) {
-	res, err := d.db.Exec("INSERT INTO `orders_work` (id_orders, id_work) VALUE (?, ?)", orderWorks.IdOrder,
-		orderWorks.IdWork)
+	sb := sq.Insert("orders_work").
+		Columns("id_orders", "id_work").
+		Values(orderWorks.IdOrder, orderWorks.IdWork)
+	res, err := sb.RunWith(d.db).Exec()
 	if err != nil {
-		fmt.Println("не удалось записать новую запчасть в базу данных", err)
-		return 0, err
+		d.log.Error(err)
 	}
 	id, err = res.LastInsertId()
-
-	return id, err
-
-}
-func (d *Order) DelOrderWorks(id int64) (err error) {
-	_, err = d.db.Query("DELETE FROM `orders_work` WHERE `id`=?", id)
 	if err != nil {
-		fmt.Println(err, "не удалось записать статус ")
+		d.log.Error(err)
+	}
+	return id, err
+}
+
+func (d *Order) DelOrderWorks(id int64) (err error) {
+	sb := sq.Delete("orders_work").Where(sq.Eq{"id": id})
+	_, err = sb.RunWith(d.db).Query()
+	if err != nil {
+		d.log.Error(err)
 	}
 	return err
 }

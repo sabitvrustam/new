@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
 	"github.com/sabitvrustam/new/pkg/database/orders"
@@ -15,10 +15,13 @@ import (
 type Telegram struct {
 	db    *sql.DB
 	order *orders.Order
+	log   *logrus.Logger
 }
 
-func NewTelegram(db *sql.DB) *Telegram {
-	return &Telegram{db: db, order: orders.NewOrder(db)}
+func NewTelegram(db *sql.DB, log *logrus.Logger) *Telegram {
+	return &Telegram{db: db,
+		order: orders.NewOrder(db, log),
+		log:   log}
 }
 
 func (d *Telegram) Tgbot() {
@@ -26,14 +29,14 @@ func (d *Telegram) Tgbot() {
 	key := os.Getenv("tbotapi")
 	bot, err := tgbotapi.NewBotAPI(key)
 	if err != nil {
-		log.Panic(err)
+		d.log.Error(err)
 	}
 	bot.Debug = true
-	log.Infof("Authorized on account %s", bot.Self.UserName)
-	tgbotapi.SetLogger(log.New())
+	d.log.Infof("Authorized on account %s", bot.Self.UserName)
+	tgbotapi.SetLogger(d.log)
 	// инициализируем канал, куда будут прилетать обновления от API
 	var ucfg tgbotapi.UpdateConfig = tgbotapi.NewUpdate(0)
-	ucfg.Timeout = 10
+	ucfg.Timeout = 60
 	updates, err := bot.GetUpdatesChan(ucfg)
 	if err != nil {
 		fmt.Println(err)
@@ -57,8 +60,10 @@ func (d *Telegram) Tgbot() {
 			bot.Send(msg)
 		}
 		nom, _ := strconv.ParseInt(text, 10, 64)
-		result, _ := d.order.ReadOrder(nom)
-		msg.Text = fmt.Sprintf(" Акт № %d\n клиент - %s %s %s\n статус ремонта %s", result.IdOrder, result.User.FirstName, result.User.LastName, result.User.MidlName, result.StatusOrder)
+		result, _ := d.order.GetOrderByID(nom)
+		order := result
+		msg.Text = fmt.Sprintf(" Акт № %d\n клиент - %s %s %s\n статус ремонта %s", order.IdOrder, order.User.FirstName,
+			order.User.LastName, order.User.MidlName, order.StatusOrder)
 		bot.Send(msg)
 	}
 }

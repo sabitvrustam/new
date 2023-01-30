@@ -100,36 +100,3 @@ sendRequest('POST', requestURL, body = Order)
 
     return false;
 };
-
-
-
-
-//     .then(data => console.log(data))
-//     .catch(err =>console.log(err));
-
-
-// const testJson = async(url) => {
-//     const data = await fetch(url);
-//     console.log(data);
-//     if(!data.ok){
-//         throw new error('ошибка по адресу ${url}, статус ошибки ${data}');
-//     }
-//     return await data.json();
-// };
-
-// testJson(requestURL).then((data) => console.log(data));
-// function createOrder (el){
-// el.innerHTML = "hihihi";
-// };
-
-
-
-// const senddata = async (url, data) => {
-//     const dataread = await fetch(url, {
-//         metod: 'post',
-//         body: 'data',
-
-//     });
-//     return await dataread.json();
-
-// }

@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
-func Migrate(db *sql.DB) {
+func Migrate(db *sql.DB, log *logrus.Logger) {
 
 	res, err := db.Query("show databases")
 	if err != nil {

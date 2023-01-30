@@ -1,63 +1,51 @@
 package orders
 
 import (
-	"fmt"
-
+	sq "github.com/Masterminds/squirrel"
 	"github.com/sabitvrustam/new/pkg/types"
 )
 
-func (d *Order) ReadOrderPart(id int64) (result []types.OrderParts, err error) {
-	res, err := d.db.Query("SELECT op.id, op.id_orders, op.id_parts, p.parts_name, p.parts_price from orders_parts AS op "+
-		"JOIN parts AS p ON op.id_parts = p.id "+
-		"WHERE op.id =?", id)
-	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице устройств")
+func (d *Order) ReadOrderParts(id *int64, idOrder int64) (orderP []types.OrderParts, err error) {
+	sb := sq.Select("op.id", "op.id_orders", "op.id_parts", "p.parts_name", "p.parts_price").
+		From("orders_parts AS op").
+		Join("parts AS p ON op.id_parts = p.id")
+	if id != nil {
+		sb = sb.Where(sq.Eq{"op.id": *id})
+	} else {
+		sb = sb.Where(sq.Eq{"op.id_orders": idOrder})
 	}
+	res, err := sb.RunWith(d.db).Query()
 	for res.Next() {
-		var resul types.OrderParts
-		err = res.Scan(&resul.Id, &resul.IdOrder, &resul.IdPart, &resul.PartName, &resul.PartPrice)
+		var result types.OrderParts
+		err = res.Scan(&result.Id, &result.IdOrder, &result.IdPart, &result.PartName, &result.PartPrice)
 		if err != nil {
-			fmt.Println(err)
+			d.log.Error(err)
 		}
-		result = append(result, resul)
+		orderP = append(orderP, result)
 	}
-	return result, err
-}
-
-func (d *Order) ReadOrderParts(idOrder int64) (result []types.OrderParts, err error) {
-	res, err := d.db.Query("SELECT op.id, op.id_orders, op.id_parts, p.parts_name, p.parts_price from orders_parts AS op "+
-		"JOIN parts AS p ON op.id_parts = p.id "+
-		"WHERE op.id_orders =?", idOrder)
-	if err != nil {
-		fmt.Sprintln(err, "не удалось выполнить запрос селект к таблице устройств")
-	}
-	for res.Next() {
-		var resul types.OrderParts
-		err = res.Scan(&resul.Id, &resul.IdOrder, &resul.IdPart, &resul.PartName, &resul.PartPrice)
-		if err != nil {
-			fmt.Println(err)
-		}
-		result = append(result, resul)
-	}
-	return result, err
+	return orderP, err
 }
 
 func (d *Order) NewOrderParts(orderParts types.OrderParts) (id int64, err error) {
-	res, err := d.db.Exec("INSERT INTO `orders_parts` (id_orders, id_parts) VALUE (?, ?)", orderParts.IdOrder,
-		orderParts.IdPart)
+	sb := sq.Insert("orders_parts").
+		Columns("id_orders", "id_parts").
+		Values(orderParts.IdOrder, orderParts.IdPart)
+	res, err := sb.RunWith(d.db).Exec()
 	if err != nil {
-		fmt.Println("не удалось записать новую запчасть в базу данных", err)
-		return 0, err
+		d.log.Error(err)
 	}
 	id, err = res.LastInsertId()
-
-	return id, err
-
-}
-func (d *Order) DelOrderParts(id int64) (err error) {
-	_, err = d.db.Query("DELETE FROM `Orders_parts` WHERE `id`=?", id)
 	if err != nil {
-		fmt.Println(err, "не удалось записать статус ")
+		d.log.Error(err)
+	}
+	return id, err
+}
+
+func (d *Order) DelOrderParts(id int64) (err error) {
+	sb := sq.Delete("orders_parts").Where(sq.Eq{"id": id})
+	_, err = sb.RunWith(d.db).Query()
+	if err != nil {
+		d.log.Error(err, "не удалось записать статус ")
 	}
 	return err
 }
