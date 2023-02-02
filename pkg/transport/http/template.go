@@ -24,7 +24,7 @@ func NewTemplates(log *logrus.Logger) (t Templates) {
 	if err != nil {
 		t.log.Error(err, "не удалось открыть главную страничку")
 	}
-	tpl, err = template.ParseFiles("web/html/header.html", "web/html/createPage.html", "web/html/footer.html")
+	tpl, err = template.ParseFiles("web/html/header.html", "web/html/create_order.html", "web/html/footer.html")
 	t.CteateOrder = tpl
 	if err != nil {
 		t.log.Error(err, "не удалось открыть страничку создания заказа")
@@ -60,7 +60,7 @@ func (t *Templates) indexPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (t *Templates) newOrderPage(w http.ResponseWriter, r *http.Request) {
-	err := t.CteateOrder.ExecuteTemplate(w, "createPage", nil)
+	err := t.CteateOrder.ExecuteTemplate(w, "createOrder", nil)
 	if err != nil {
 		t.log.Error(err)
 	}

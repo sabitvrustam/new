@@ -20,7 +20,7 @@ func NewMaster(db *sql.DB, log *logrus.Logger) *Master {
 }
 
 func (d *Master) MastersRead() (result []types.Master, err error) {
-	masters := sq.Select("id", "l_name", "f_name", "m_name").
+	masters := sq.Select("id", "l_name", "f_name", "m_name", "n_phone").
 		From("masters")
 	res, err := masters.RunWith(d.db).Query()
 	if err != nil {
@@ -30,7 +30,7 @@ func (d *Master) MastersRead() (result []types.Master, err error) {
 		var resul types.Master
 		err = res.Scan(&resul.Id, &resul.LastName, &resul.FirstName, &resul.MidlName, &resul.Phone)
 		if err != nil {
-			d.log.Error(err)
+			d.log.Error(err, "hvjhv")
 		}
 		result = append(result, resul)
 	}

@@ -19,6 +19,8 @@ func StartHandler(db *sql.DB, log *logrus.Logger) {
 	userAPI := api.NewUsersAPI(db, log)
 	partAPI := api.NewPartAPI(db, log)
 	workAPI := api.NewWork(db, log)
+	statusAPI := api.NewStatusAPI(db, log)
+
 	r.HandleFunc("/", t.indexPage)
 	r.HandleFunc("/order/new", t.newOrderPage)
 	r.HandleFunc("/order/status", t.statusOrderPage)
@@ -61,6 +63,7 @@ func StartHandler(db *sql.DB, log *logrus.Logger) {
 	r.HandleFunc("/api/orderworks/{id:[0-9]+}", orderAPI.GetOrderWorks).Methods("GET")            //json работы в заказе
 	r.HandleFunc("/api/orderworks", orderAPI.PostOrderWorks).Methods("POST")                      //json добавить работу к заказу
 	r.HandleFunc("/api/orderworks/{id:[0-9]+}", orderAPI.DeleteOrderWorks).Methods("DELETE")      //json удалить работу из заказа
+	r.HandleFunc("/api/status", statusAPI.GetStatus).Methods("get")
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./web/static"))))
 	log.Info("Локальный сервер запущен порт 8080")
 	http.ListenAndServe(":8080", r)

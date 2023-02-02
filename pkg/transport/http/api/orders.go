@@ -99,7 +99,7 @@ func (a *OrderAPI) PostOrder(w http.ResponseWriter, r *http.Request) {
 	var resul *types.Order
 	resul, err = a.order.GetOrderByID(id)
 	if err != nil {
-		a.log.Error(err, "не удалось считать данные ордера из базы данных по ид")
+		a.log.Error(err, "Не удалось считать данные ордера из базы данных по ид")
 		w.WriteHeader(500)
 		return
 	}
