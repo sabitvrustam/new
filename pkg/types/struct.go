@@ -60,9 +60,9 @@ type Master struct {
 type OrderParts struct {
 	Id        int64  `json:"id"`
 	IdOrder   int64  `json:"id_order"`
-	IdPart    int64  `json:"id_work"`
-	PartName  string `json:"work_name"`
-	PartPrice string `json:"work_price"`
+	IdPart    int64  `json:"id_part"`
+	PartName  string `json:"part_name"`
+	PartPrice string `json:"part_price"`
 }
 type OrderWorks struct {
 	Id        int64  `json:"id"`

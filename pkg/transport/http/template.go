@@ -29,12 +29,12 @@ func NewTemplates(log *logrus.Logger) (t Templates) {
 	if err != nil {
 		t.log.Error(err, "не удалось открыть страничку создания заказа")
 	}
-	tpl, err = template.ParseFiles("web/html/header.html", "web/html/userStatus.html", "web/html/footer.html")
+	tpl, err = template.ParseFiles("web/html/header.html", "web/html/status_order.html", "web/html/footer.html")
 	t.OrderStatus = tpl
 	if err != nil {
 		t.log.Error(err, "Не удалось открыть страницу состояния заказа")
 	}
-	tpl, err = template.ParseFiles("web/html/header.html", "web/html/makeChangesOrder.html", "web/html/footer.html")
+	tpl, err = template.ParseFiles("web/html/header.html", "web/html/change_order.html", "web/html/footer.html")
 	t.MakeOrderChange = tpl
 	if err != nil {
 		t.log.Error(err, "не удалось открыть страничку изменения заказа")

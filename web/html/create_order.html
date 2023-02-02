@@ -1,178 +1,204 @@
 {{ define "createOrder" }}
 {{ template "header" }}
-<div id="createUser" class="form-group">
-    <table>
-        <tbody>
-            <form onsubmit="return newUserForm(this, context)" method="post">
-                <tr>
-                    <td><label>Фамилия клиента</label></td>
-                    <td><input type="text" size="15" placeholder="Фамилия" id="UserFirstName"> </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><sup style="color: red;" id="UserFirstNameErr"> </sup></td>
-                </tr>
-                <tr>
-                    <td><label>Имя клиента</label></td>
-                    <td><input type="text" size="15" placeholder="Имя" id="UserLastName">
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><sup style="color: red;" id="UserLastNameErr"> </sup></td>
-                </tr>
-                <tr>
-                    <td><label>Отчество клиента</label></td>
-                    <td><input type="text" size="15" placeholder="Отчество" id="UserMidlName">
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><sup style="color: red;" id="UserMidlNameErr"> </sup></td>
-                </tr>
-
-                <tr>
-                    <td><label>Номер телефона</label></td>
-                    <td><input type="text" size="15" placeholder="Телефон" id="PhoneNombe">
-                    </td>
-                </tr>
-                <tr>
-                    <td><button type="reset">Сброс</button><button type="submit">Далее</button></td>
-                    </td>
-                </tr>
-            </form>
-        </tbody>
-    </table>
+<div class="container" id="createUser">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table>
+                <tbody>
+                    <form onsubmit="return newUserForm(this, context)" method="post">
+                        <tr>
+                            <td><label>Фамилия клиента</label></td>
+                            <td><input type="text" size="15" placeholder="Фамилия" id="UserFirstName"> </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="UserFirstNameErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td><label>Имя клиента</label></td>
+                            <td><input type="text" size="15" placeholder="Имя" id="UserLastName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="UserLastNameErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td><label>Отчество клиента</label></td>
+                            <td><input type="text" size="15" placeholder="Отчество" id="UserMidlName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="UserMidlNameErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td><label>Номер телефона</label></td>
+                            <td><input type="text" size="15" placeholder="Телефон" id="PhoneNombe">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" type="reset">Сброс</button>
+                                <button class="btn btn-primary btn-sm" type="submit">Далее</button>
+                            </td>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-<div id="createDevice">
-    <table>
-        <tbody>
-            <form onsubmit="return newDeviceForm(this, context)" method="post">
-                <tr>
-                    <td></td>
-                    <td><sup style="color: red;" id="PhoneNombeErr"> </sup></td>
-                </tr>
-                <tr>
-                    <td><label>Типа аппарата</label></td>
-                    <td><input type="text" size="15" placeholder="Тип аппарата" id="TypeEquipment"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><sup style="color: red;" id="TypeEquipmentErr"> </sup></td>
-                </tr>
-                <tr>
-                    <td><label>Фирма</label></td>
-                    <td><input type="text" size="15" placeholder="Фирма" id="Brand"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><sup style="color: red;" id="BrandErr"> </sup></td>
-                </tr>
+<div class="container" id="createDevice">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table>
+                <tbody>
+                    <form onsubmit="return newDeviceForm(this, context)" method="post">
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="PhoneNombeErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td><label>Типа аппарата</label></td>
+                            <td><input type="text" size="15" placeholder="Тип аппарата" id="TypeEquipment"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="TypeEquipmentErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фирма</label></td>
+                            <td><input type="text" size="15" placeholder="Фирма" id="Brand"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="BrandErr"> </sup></td>
+                        </tr>
 
-                <tr>
-                    <td><label>Модель</label></td>
-                    <td><input type="text" size="15" placeholder="Модель" id="Model"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><sup style="color: red;" id="ModelErr"> </sup></td>
-                </tr>
+                        <tr>
+                            <td><label>Модель</label></td>
+                            <td><input type="text" size="15" placeholder="Модель" id="Model"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="ModelErr"> </sup></td>
+                        </tr>
 
-                <tr>
-                    <td><label>Серийный номер</label></td>
-                    <td><input type="text" size="15" placeholder="Серийный номер" id="SerialN"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><sup style="color: red;" id="SerialNErr"> </sup></td>
-                </tr>
-                <tr>
-                    <td><button type="reset">Сброс</button><button type="submit">Далее</button></td>
-                </tr>
-            </form>
-        </tbody>
-    </table>
+                        <tr>
+                            <td><label>Серийный номер</label></td>
+                            <td><input type="text" size="15" placeholder="Серийный номер" id="SerialN"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="SerialNErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" type="reset">Сброс</button>
+                                <button class="btn btn-primary btn-sm" type="submit">Далее</button>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-<div id="createOrder">
-    <table>
-        <tbody>
-            <form onsubmit="return newOrderForm(this, context)" method="post">
-                <tr>
-                    <td><label>выберете мастера</label></td>
+<div class="container" id="createOrder">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table>
+                <tbody>
+                    <form onsubmit="return newOrderForm(this, context)" method="post">
+                        <tr>
+                            <td><label>выберете мастера</label></td>
 
-                    <td><select name="masters" id="masters"></select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label>выберете статус</label></td>
+                            <td><select name="masters" id="masters"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label>выберете статус</label></td>
 
-                    <td><select name="status" id="status"></select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><button type="reset">Сброс</button><button type="submit">Сохранить</button></td>
-                </tr>
-            </form>
-        </tbody>
-    </table>
+                            <td><select name="status" id="status"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" type="reset">Сброс</button>
+                                <button class="btn btn-primary btn-sm" type="submit">Сохранить</button>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-<div id="orderStatus">
-    <table>
-        <tbody>
-            <form>
-                <tr>
-                    <td><label>Номер Заказа</label></td>
-                    <td><label id="idOrder"> </label></td>
-                </tr>
-                <tr>
-                    <td><label>Фамилия клиента</label></td>
-                    <td><label id="UserFirstNameOrder"> </label></td>
-                </tr>
-                <tr>
-                    <td><label>Имя клиента</label></td>
-                    <td><label id="UserLastNameOrder"></label></td>
-                </tr>
-                <tr>
-                    <td><label>Отчество клиента</label></td>
-                    <td><label id="UserMidlNameOrder"></label></td>
-                </tr>
-                <tr>
-                    <td><label>Номер телефона</label></td>
-                    <td><label id="UserPhoneNomberOrder"></label></td>
-                </tr>
-                <tr>
-                    <td><label>Типа аппарата</label></td>
-                    <td><label id="DeviceTypeEquipment"></label></td>
-                </tr>
-                <tr>
-                    <td><label>Фирма</label></td>
-                    <td><label id="DeviceBrand"></label></td>
-                </tr>
-                <tr>
-                    <td><label>Модель</label></td>
-                    <td><label id="DeviceModel"></label></td>
-                </tr>
-                <tr>
-                    <td><label>Серийный номер</label></td>
-                    <td><label id="DeviceSerialN"></label></td>
-                </tr>
-                <tr>
-                    <td><label>Мастер</label></td>
-                    <td><label id="MasterFirstName"></label></td>
-                </tr>
-                <tr>
-                    <td><label>Статус</label></td>
-                    <td><label id="StatusOrder"></label></td>
-                </tr>
-                <tr>
-                    <td><button type="reset">Отмена</button><button type="submit">готово</button></td>
-                </tr>
-            </form>
-        </tbody>
-    </table>
+<div class="container" id="orderStatus">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table>
+                <tbody>
+                    <form>
+                        <tr>
+                            <td><label>Номер Заказа</label></td>
+                            <td><label id="idOrder"> </label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фамилия клиента</label></td>
+                            <td><label id="UserFirstNameOrder"> </label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Имя клиента</label></td>
+                            <td><label id="UserLastNameOrder"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Отчество клиента</label></td>
+                            <td><label id="UserMidlNameOrder"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Номер телефона</label></td>
+                            <td><label id="UserPhoneNomberOrder"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Типа аппарата</label></td>
+                            <td><label id="DeviceTypeEquipment"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фирма</label></td>
+                            <td><label id="DeviceBrand"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Модель</label></td>
+                            <td><label id="DeviceModel"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Серийный номер</label></td>
+                            <td><label id="DeviceSerialN"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Мастер</label></td>
+                            <td><label id="MasterFirstName"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Статус</label></td>
+                            <td><label id="StatusOrder"></label></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="btn btn-primary btn-sm" type="submit">Сохранить</button>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-
+<script  src="/static/js/main.js"> </script> 
 
 {{ template "footer" }}
 

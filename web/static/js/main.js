@@ -15,7 +15,6 @@ async function sendRequest(method, url, contextName, body) {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log(context);
 
     document.getElementById("createDevice").style.display = "none";
     document.getElementById("createOrder").style.display = "none";
@@ -28,8 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 var master = (context.masters[index]);
                 html += (`<option value="${master.id}">${master.first_name}</option>`);
             }
-            console.log(html);
-            console.log(context);
             document.getElementById("masters").innerHTML = html;
 
         });
@@ -165,9 +162,7 @@ function newOrderForm(el, context) {
 
         });
 
-    document.getElementById("createUser").style.display = "none";
-    document.getElementById("createDevice").style.display = "none";
-    document.getElementById("createOrder").style.display = "none";
+
     document.getElementById("orderStatus").style.display = "block";
 
     return false;

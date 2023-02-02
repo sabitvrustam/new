@@ -1,0 +1,132 @@
+{{ define "userStatus" }}
+{{ template "header" }}
+<div class="container">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table>
+                <tbody>
+                    <form onsubmit="return OrderStatus(this)" method="get">
+
+                        <tr>
+                            <td><label>Hомер квитанции</label></td>
+                            <td><input type="text" placeholder="номер квитанции" name="id" id="id"></td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" type="reset">сброс</button>
+                                <button class="btn btn-primary btn-sm" type="submit">Поиск</button>
+                            </td>
+
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container" id="orderStatus">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Заказ</th>
+                    </tr>
+                </thead>
+                
+                
+                <tbody>
+                    <form>
+                        <tr>
+                            <td><label>Номер Заказа</label></td>
+                            <td style="text-align: center;"><label id="idOrder"> </label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фамилия клиента</label></td>
+                            <td style="text-align: center;"><label id="UserFirstNameOrder"> </label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Имя клиента</label></td>
+                            <td style="text-align: center;"><label id="UserLastNameOrder"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Отчество клиента</label></td>
+                            <td style="text-align: center;"><label id="UserMidlNameOrder"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Номер телефона</label></td>
+                            <td style="text-align: center;"><label id="UserPhoneNomberOrder"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Типа аппарата</label></td>
+                            <td style="text-align: center;"><label id="DeviceTypeEquipment"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фирма</label></td>
+                            <td style="text-align: center;"><label id="DeviceBrand"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Модель</label></td>
+                            <td style="text-align: center;"><label id="DeviceModel"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Серийный номер</label></td>
+                            <td style="text-align: center;"><label id="DeviceSerialN"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Мастер</label></td>
+                            <td style="text-align: center;"><label id="MasterFirstName"></label></td>
+                        </tr>
+                        <tr>
+                            <td><label>Статус</label></td>
+                            <td style="text-align: center;"><label id="StatusOrder"></label></td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+
+
+
+        </div>
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Запчасти</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody id="parts"></tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Работы</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody id="works"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script src="/static/js/order_status.js"> </script>
+
+{{ template "footer" }}
+
+{{ end }}
