@@ -8,10 +8,30 @@ async function sendRequest(method, url, body) {
     return data;
 };
 document.addEventListener("DOMContentLoaded", function () {
-    readOrders();
+        readOrders(0);
+    
 });
-function readOrders(){
-    sendRequest("get", "/api/order/100/0")
+function readOrders(page){
+    sendRequest("get", "/api/count")
+    .then(data => {
+      
+   let ind;
+    let i = 0;
+    let html = "";
+    for (ind = 0; ind <= data; ind = ind +10){
+       
+      html += (`<button class="btn btn-primary btn-sm" onclick="readOrders(${i})">${i}</button>   `);
+      document.getElementById("count").innerHTML = html;
+i = i+1;
+    }
+
+    });
+   
+   
+
+   page = page*10;
+   
+    sendRequest("get", "/api/order/10/"+page)
     .then(data => {
         let html = "";
         let index;
@@ -29,6 +49,9 @@ collor = ("table-success");
             };
             if (order.status.id_status === 5){
                 collor = ("table-warning"); 
+            };
+            if (order.status.id_status === 4){
+                collor = ("table-danger"); 
             };
 
             html += (`<tr class="${collor}">

@@ -20,6 +20,7 @@ func StartHandler(db *sql.DB, log *logrus.Logger) {
 	partAPI := api.NewPartAPI(db, log)
 	workAPI := api.NewWork(db, log)
 	statusAPI := api.NewStatusAPI(db, log)
+	countAPI := api.NewCountAPI(db, log)
 
 	r.HandleFunc("/", t.indexPage)
 	r.HandleFunc("/order/new", t.newOrderPage)
@@ -29,6 +30,7 @@ func StartHandler(db *sql.DB, log *logrus.Logger) {
 	r.HandleFunc("/parts", t.parts)
 	r.HandleFunc("/works", t.works)
 
+	r.HandleFunc("/api/count", countAPI.GetCount).Methods("get")                                  //колличество заказов
 	r.HandleFunc("/api/users", userAPI.GetUsers).Methods("GET")                                   //json список клиентов
 	r.HandleFunc("/api/users/search/{l_name:[А-Яа-яЁё]+}", userAPI.GetUsersSearch).Methods("GET") //json поиск клиента
 	r.HandleFunc("/api/users/{id:[0-9]+}", userAPI.GetUser).Methods("GET")                        //json статус клиента

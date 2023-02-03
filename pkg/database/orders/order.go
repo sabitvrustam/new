@@ -83,7 +83,7 @@ func (d *Order) ChangeOrder(order types.Id) (err error) {
 		Set("id_device", order.IdDevice).
 		Set("id_masters", order.IdMaster).
 		Set("id_status", order.IdStatus).
-		Where(sq.Eq{"o.id": order.IdOrder})
+		Where(sq.Eq{"id": order.IdOrder})
 	_, err = orders.RunWith(d.db).Exec()
 	if err != nil {
 		fmt.Println("не удалось записать новую запчасть в базу данных", err)
