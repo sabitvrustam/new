@@ -36,7 +36,7 @@ func (d *Order) ReadOrders(limit uint64, offset uint64) (orders []*types.Order, 
 func (d *Order) readOrders(limit uint64, offset uint64, id *int64) (orders []*types.Order, err error) {
 	sb := sq.Select("o.id", "u.id", "u.f_name", "u.l_name", "u.m_name", "u.n_phone",
 		"d.id", "d.type", "d.brand", "d.model", "d.sn",
-		"m.id", "m.f_name", "m.l_name", "m.m_name", "m.n_phone", "s.o_status").
+		"m.id", "m.f_name", "m.l_name", "m.m_name", "m.n_phone", "s.id", "s.o_status").
 		From("orders AS o").
 		Join("users AS u ON o.id_users = u.id").
 		Join("device AS d ON o.id_device = d.id").
@@ -56,7 +56,7 @@ func (d *Order) readOrders(limit uint64, offset uint64, id *int64) (orders []*ty
 		err = res.Scan(&result.IdOrder, &result.User.Id, &result.User.FirstName, &result.User.LastName,
 			&result.User.MidlName, &result.User.Phone, &result.Device.Id, &result.TypeEquipment,
 			&result.Brand, &result.Model, &result.Sn, &result.Master.Id, &result.Master.FirstName,
-			&result.Master.LastName, &result.Master.MidlName, &result.Master.Phone, &result.Status.StatusOrder)
+			&result.Master.LastName, &result.Master.MidlName, &result.Master.Phone, &result.Status.Id, &result.Status.StatusOrder)
 		if err != nil {
 			d.log.Error(err)
 		}

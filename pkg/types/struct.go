@@ -42,7 +42,7 @@ type Part struct {
 	PartsPrice string `json:"parts_price"`
 }
 type Status struct {
-	Id          int64  `json:"id"`
+	Id          int64  `json:"id_status"`
 	StatusOrder string `json:"status_order"`
 }
 type Price struct {

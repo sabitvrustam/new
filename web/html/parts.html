@@ -1,30 +1,32 @@
 {{ define "parts" }}
 {{ template "header" }}
-<form action="newParts" method="post">
+
     <div class="container">
         <div class="row row-cols-auto">
             <div class="col">
                 <table>
                     <tbody>
+                        <form onsubmit="return NewPart(this)" method="post">
                         <tr>
                             <th colspan="2" style="text-align: center;"><label>Добавить новую деталь</label></th>
                         </tr>
                         <tr>
                             <td><label>Название детали</label></td>
                             <td><input type="text" required="required" placeholder="Название детали" maxlength="10"
-                                    name="partsName" id="partsName">
+                                    name="NewPartsName" id="NewPartsName">
                             </td>
                         </tr>
                         <tr>
                             <td><label>Цена детали</label></td>
                             <td><input type="text" required="required" placeholder="Цена" maxlength="10"
-                                    name="partsPrice" id="partsPrice">
+                                    name="NewPartsPrice" id="NewPartsPrice">
                             </td>
                         </tr>
                         <tr>
                             <td></td>
                             <td><button class="btn btn-primary" type="submit">сохранить</button></td>
                         </tr>
+                        </form>
                     </tbody>
                 </table>
             </div>
@@ -40,20 +42,33 @@
                             <th scope="col">Цена</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{ range .OllParts }}
-                        <tr>
-                            <td><label>{{ .Id }}</label></td>
-                            <td><label>{{ .PartsName }}</label></td>
-                            <td><label>{{ .PartsPrice }}</label></td>
-                        </tr>
-                        {{ end }}
+                    <tbody id="parts">
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+
+<form onsubmit="return saveCangePart(this)" method="post">
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body">
+          <table id="changePart"></table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Закрыть</button>
+          <button class="btn btn-primary btn-sm" type="submit" data-bs-dismiss="modal">Сохранить</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </form>
+<script src="/static/js/part.js"> </script>
 {{ template "footer" }}
 
 {{ end }}

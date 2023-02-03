@@ -14,6 +14,7 @@ type Templates struct {
 	MakeOrderChange *template.Template
 	Parts           *template.Template
 	Works           *template.Template
+	Orders          *template.Template
 	log             *logrus.Logger
 }
 
@@ -31,6 +32,11 @@ func NewTemplates(log *logrus.Logger) (t Templates) {
 	}
 	tpl, err = template.ParseFiles("web/html/header.html", "web/html/status_order.html", "web/html/footer.html")
 	t.OrderStatus = tpl
+	if err != nil {
+		t.log.Error(err, "Не удалось открыть страницу состояния заказа")
+	}
+	tpl, err = template.ParseFiles("web/html/header.html", "web/html/orders.html", "web/html/footer.html")
+	t.Orders = tpl
 	if err != nil {
 		t.log.Error(err, "Не удалось открыть страницу состояния заказа")
 	}
@@ -68,6 +74,13 @@ func (t *Templates) newOrderPage(w http.ResponseWriter, r *http.Request) {
 
 func (t *Templates) statusOrderPage(w http.ResponseWriter, r *http.Request) {
 	err := t.OrderStatus.ExecuteTemplate(w, "userStatus", nil)
+	if err != nil {
+		t.log.Error(err)
+	}
+}
+
+func (t *Templates) ordersPage(w http.ResponseWriter, r *http.Request) {
+	err := t.Orders.ExecuteTemplate(w, "orders", nil)
 	if err != nil {
 		t.log.Error(err)
 	}

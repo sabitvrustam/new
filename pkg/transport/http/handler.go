@@ -25,6 +25,7 @@ func StartHandler(db *sql.DB, log *logrus.Logger) {
 	r.HandleFunc("/order/new", t.newOrderPage)
 	r.HandleFunc("/order/status", t.statusOrderPage)
 	r.HandleFunc("/order/change", t.makeChangesOrder)
+	r.HandleFunc("/order", t.ordersPage)
 	r.HandleFunc("/parts", t.parts)
 	r.HandleFunc("/works", t.works)
 
@@ -55,7 +56,7 @@ func StartHandler(db *sql.DB, log *logrus.Logger) {
 	r.HandleFunc("/api/parts/{id:[0-9]+}", partAPI.DeletePart).Methods("DELETE")                  //json удалить запчасть
 	r.HandleFunc("/api/works", workAPI.GetWorks).Methods("GET")                                   //json список работ
 	r.HandleFunc("/api/works", workAPI.PostWork).Methods("POST")                                  //json новая работа
-	r.HandleFunc("/api/works/c", workAPI.PutWork).Methods("PUT")                                  //json изменить работу
+	r.HandleFunc("/api/works/{id:[0-9]+}", workAPI.PutWork).Methods("PUT")                        //json изменить работу
 	r.HandleFunc("/api/works/{id:[0-9]+}", workAPI.DeleteWork).Methods("DELETE")                  // json удалить работу
 	r.HandleFunc("/api/orderparts/{id:[0-9]+}", orderAPI.GetOrderParts).Methods("GET")            //json запчасти в заказе
 	r.HandleFunc("/api/orderparts", orderAPI.PostOrderParts).Methods("POST")                      //json добавить запчасти к заказу

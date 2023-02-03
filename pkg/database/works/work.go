@@ -55,7 +55,7 @@ func (d *Work) WriteWork(newWork types.Work) (id int64, err error) {
 func (d *Work) ChangeWork(work types.Work) (err error) {
 	sb := sq.Update("work").
 		Set("work_name", work.WorkName).
-		Set("work-price", work.WorkPrice).
+		Set("work_price", work.WorkPrice).
 		Where(sq.Eq{"id": work.Id})
 	_, err = sb.RunWith(d.db).Query()
 	if err != nil {

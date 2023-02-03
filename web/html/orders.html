@@ -1,0 +1,29 @@
+{{ define "orders" }}
+{{ template "header" }}
+<div class="container">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Заказы</th>
+                    </tr>
+                    <tr>
+                        <th scope="col" style="text-align: center;"># Акта</th>
+                        <th scope="col" style="text-align: center;">Ф.И.О. клиента</th>
+                        <th scope="col" style="text-align: center;">Тип аппарата</th>
+                        <th scope="col" style="text-align: center;">Модель аппарата</th>
+                        <th scope="col" style="text-align: center;">Мастер</th>
+                        <th scope="col" style="text-align: center;">Состояние</th>
+                    </tr>
+                </thead>
+                <tbody id="orders">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script  src="/static/js/orders.js"> </script> 
+{{ template "footer" }}
+
+{{ end }}
