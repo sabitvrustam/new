@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 var master = (context.masters[index]);
                 html += (`<option value="${master.id}">${master.first_name}</option>`);
             }
+            console.log(html);
+            console.log(context);
             document.getElementById("masters").innerHTML = html;
 
         });
@@ -36,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let index;
             for (index = 0; index < context.status.length; ++index) {
                 var status = (context.status[index]);
-                html += (`<option value="${status.id}">${status.status_order}</option>`);
+                html += (`<option value="${status.id_status}">${status.status_order}</option>`);
             }
             console.log(html);
             console.log(context);
@@ -136,6 +138,7 @@ function newDeviceForm(el, context) {
 function newOrderForm(el, context) {
     var idMaster = el.masters.value;
     var idStatus = el.status.value;
+    console.log(idStatus);
 
     let order = {
         id_user: context.user.id_user,

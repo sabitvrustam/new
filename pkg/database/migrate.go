@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/sirupsen/logrus"
@@ -10,7 +11,17 @@ import (
 
 func Migrate(db *sql.DB, log *logrus.Logger) {
 
-	res, err := db.Query("show databases")
+	var dbuser string = os.Getenv("bduser")
+	var dbpass string = os.Getenv("bdpass")
+	var pass string = fmt.Sprintf("%s:%s@tcp(185.68.93.47:3306)/", dbuser, dbpass)
+	d, err := sql.Open("mysql", pass)
+	if err != nil {
+		log.Error("не удалось подключиться к базе данных", err)
+	} else {
+		log.Info("Подключение к базе данных")
+	}
+
+	res, err := d.Query("show databases")
 	if err != nil {
 		fmt.Println(err, "не удалось выполнить команду mysql показать базы данных")
 	}
@@ -26,9 +37,10 @@ func Migrate(db *sql.DB, log *logrus.Logger) {
 		}
 	}
 	if !dbStatus {
-		_, err := db.Query("CREATE DATABASE `my_service`")
+		_, err := d.Query("CREATE DATABASE `my_service`")
 		if err != nil {
 			fmt.Println(err, "не удалось выполнить команду mysql создания базы данных")
+			return
 		}
 		_, err = db.Query("CREATE TABLE `users` ( " +
 			"`id` int NOT NULL AUTO_INCREMENT, " +

@@ -1,23 +1,133 @@
 {{ define "makeChangesOrder" }}
 {{ template "header" }}
-<table>
-    <tbody>
-        <form action="" method="post">
+<div class="container">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table>
+                <tbody>
+                    <form onsubmit="return readIdOrder(this)" method="get">
+                        <tr>
+                            <td><label>Hомер квитанции</label></td>
+                            <td><input type="text" placeholder="номер квитанции" name="id" id="id"></td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" type="reset">сброс</button>
+                                <button class="btn btn-primary btn-sm" type="submit">Поиск</button>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container" id="orderStatus">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Заказ</th>
+                    </tr>
+                </thead>
 
-            <tr>
-                <td><label>Введите номер квитанции</label></td>
-                <td><input type="text" placeholder="номер квитанции" name="id" id="id"></td>
-            </tr>
-            <tr></tr>
-            <tr>
-                <td></td>
-                <td><button type="reset">сброс</button><button type="submit">отправить</button></td>
 
-            </tr>
-        </form>
-    </tbody>
-</table>
+                <tbody>
+                    <form onsubmit="return changeOrder(this)" method="get">
+                        <tr>
+                            <td><label>Номер Заказа</label></td>
+                            <td><input type="text" placeholder="номер квитанции" id="idOrder"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фамилия клиента</label></td>
+                            <td><input type="text" placeholder="номер квитанции" id="UserFirstName"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Имя клиента</label></td>
+                            <td><input type="text" placeholder="номер квитанции" id="UserLastName"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Отчество клиента</label></td>
+                            <td><input type="text" placeholder="номер квитанции" id="UserMidlName"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Номер телефона</label></td>
+                            <td><input type="text" placeholder="номер квитанции" id="PhoneNomber"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Типа аппарата</label></td>
+                            <td><input type="text" placeholder="номер квитанции" id="TypeEquipment"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Фирма</label></td>
+                            <td><input type="text" placeholder="номер квитанции" id="Brand"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Модель</label></td>
+                            <td><input type="text" placeholder="номер квитанции" id="Model"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Серийный номер</label></td>
+                            <td><input type="text" placeholder="номер квитанции" id="SerialN"></td>
+                        </tr>
+                        <tr>
+                            <td><label>выберете мастера</label></td>
+                            <td><select name="masters" id="masters"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label>выберете статус</label></td>
 
+                            <td><select name="status" id="status"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+
+                            <td><button class="btn btn-primary btn-sm" type="submit">Сохранить</button>
+                            </td>
+                        </tr>
+
+                    </form>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Запчасти</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody id="parts"></tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Работы</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody id="works"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+<script src="/static/js/order_change.js"> </script>
 {{ template "footer" }}
 
 {{ end }}
