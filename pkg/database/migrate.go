@@ -35,7 +35,9 @@ func Migrate(db *sql.DB, log *logrus.Logger) {
 		if result == "my_service" {
 			dbStatus = true
 		}
+		fmt.Println(result)
 	}
+
 	if !dbStatus {
 		_, err := d.Query("CREATE DATABASE `my_service`")
 		if err != nil {

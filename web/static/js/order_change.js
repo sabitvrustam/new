@@ -99,11 +99,10 @@ function innerHtml(order) {
         html += (`<option value="${status.id_status}">${status.status_order}</option>`);
     }
     document.getElementById("status").innerHTML = html;
-
-
+html = "";
 
     if (order.order_parts !== null) {
-        let html = "";
+
         let index;
         for (index = 0; index < order.order_parts.length; ++index) {
             var part = (order.order_parts[index]);
@@ -111,13 +110,21 @@ function innerHtml(order) {
                     <td><label>${index + 1}</label></td>
                     <td><label>${part.part_name}</label></td>
                     <td><label>${part.part_price}</label></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deletePartOrder(${part.id}, ${order.id},)">Удалить</button></td>
                 </tr>  `);
         };
-        document.getElementById("parts").innerHTML = html;
     } else {
-        document.getElementById("parts").innerHTML = "";
+        html = ""
     };
+    html += (`
+    <tr>
+    <td colspan="3">Добавить запчасти в заказ</td>
+    <td><button class="btn btn-primary btn-sm" onclick="deletePart()">добавить</button></td>
+</tr>
+    `)
+    document.getElementById("parts").innerHTML = html;
 
+    
     if (order.order_works !== null) {
         let html = "";
         let index;
@@ -127,15 +134,17 @@ function innerHtml(order) {
                 <td><label>${index + 1}</label></td>
                 <td><label>${work.work_name}</label></td>
                 <td><label>${work.work_price}</label></td>
-            </tr>  `);
+                <td><button class="btn btn-danger btn-sm" onclick="deleteWorkOrder(${work.id}, ${order.id},)">Удалить</button></td>
+             </tr> `);
         };
+
         document.getElementById("works").innerHTML = html;
     } else {
         document.getElementById("works").innerHTML = "";
     };
 };
 
-function changeOrder(el){
+function changeOrder(el) {
     let id = el.idOrder.value;
     let UserFirstName = el.UserFirstName.value;
     let UserLastName = el.UserLastName.value;
@@ -169,15 +178,37 @@ function changeOrder(el){
         id_status: parseInt(idStatus)
     };
 
-    sendRequest('PUT', "/api/users/"+id_user, body = user)
-        .then(data => { console.log(data)
-            sendRequest('PUT', "/api/device/"+id_device, body = device)
-            .then(data => { console.log(data)
-                sendRequest('PUT', "/api/order/"+id, body = order)
-                .then(data => { console.log(order)
-                    
+    sendRequest('PUT', "/api/users/" + id_user, body = user)
+        .then(data => {
+            console.log(data)
+            sendRequest('PUT', "/api/device/" + id_device, body = device)
+                .then(data => {
+                    console.log(data)
+                    sendRequest('PUT', "/api/order/" + id, body = order)
+                        .then(data => {
+                            console.log(order)
+
+                        });
                 });
-            });
         });
     return false;
 };
+
+function deletePartOrder(id, idOrder) {
+    console.log(id, idOrder)
+    sendRequest("delete", "/api/orderparts/" + id).then(data => {
+        let order = {};
+        order["id"] = idOrder;
+        readOrder(order);
+    });
+};
+
+function deleteWorkOrder(id, idOrder) {
+    console.log(id, idOrder)
+    sendRequest("delete", "/api/orderworks/" + id).then(data => {
+        let order = {};
+        order["id"] = idOrder;
+        readOrder(order);
+    });
+};
+

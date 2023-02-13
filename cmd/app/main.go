@@ -4,7 +4,7 @@ import (
 	"github.com/sabitvrustam/new/pkg/database"
 	"github.com/sabitvrustam/new/pkg/logger"
 	"github.com/sabitvrustam/new/pkg/transport/http"
-	"github.com/sabitvrustam/new/pkg/transport/telegram"
+	//"github.com/sabitvrustam/new/pkg/transport/telegram"
 )
 
 func main() {
@@ -14,9 +14,9 @@ func main() {
 		panic(err)
 	}
 
-	telegramm := telegram.NewTelegram(db, log)
+	//telegramm := telegram.NewTelegram(db, log)
 	database.Migrate(db, log)
-	go telegramm.Tgbot()
+	//go telegramm.Tgbot()
 	http.StartHandler(db, log)
 
 }
