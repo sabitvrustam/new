@@ -57,9 +57,10 @@ func (d *Master) MastersWrite(result types.Master) (id int64, err error) {
 func (d *Master) MastersChange(result types.Master) (err error) {
 	masters := sq.Update("masters").
 		Set("l_name", result.LastName).
-		Set("f_name", result.LastName).
+		Set("f_name", result.FirstName).
 		Set("m_name", result.MidlName).
-		Set("n_phone", result.Phone)
+		Set("n_phone", result.Phone).
+		Where(sq.Eq{"id": result.Id})
 	_, err = masters.RunWith(d.db).Exec()
 	if err != nil {
 		d.log.Error("не удалось записать новую запчасть в базу данных", err)

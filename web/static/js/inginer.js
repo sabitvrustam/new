@@ -26,8 +26,8 @@ function readInginer() {
             <td><label>${inginer.midl_name}</label></td>
             <td><label>${inginer.phone}</label></td>
             <td><button class="btn btn-danger btn-sm" onclick="deleteIngener(${inginer.id})">Удалить</button></td>
-           <td><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="changePart(${inginer.id}, '${inginer.first_name}',
-        ${inginer.last_name})">Изменить</button></td>
+           <td><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="changeIngener(${inginer.id}, '${inginer.first_name}',
+        '${inginer.last_name}', '${inginer.midl_name}', '${inginer.phone}')">Изменить</button></td>
         </tr>  `);
             }
             document.getElementById("inginers").innerHTML = html;
@@ -74,7 +74,58 @@ function newIngenerForm(el) {
     sendRequest('POST', "/api/masters", body = NewIngener)
     .then(data => { console.log(data);
     });
-return false;
+return true;
    
+};
+
+function deleteIngener(id) {
+    sendRequest("delete", "/api/masters/" + id).then(data => {
+        console.log(data)
+        readParts();
+    });
+    readInginer()
+};
+
+function changeIngener(id, first_name, last_name, mid_name, phone) {
+    console.log(id, first_name, last_name, mid_name, phone);
+    document.getElementById("exampleModalLabel").innerHTML = "изменить данные мастера";
+    let html = "";
+    html += (`
+        <tr><td><input type="text" required="required" value="${id}" maxlength="10"
+        name="id" id="id"></td></tr>
+        <tr><td><input type="text" required="required" value="${first_name}" maxlength="12"
+        name="first_name" id="first_name"></td></tr>
+        <tr><td><input type="text" required="required" value="${last_name}" maxlength="12"
+        name="last_name" id="last_name"></td></tr>
+        <tr><td><input type="text" required="required" value="${mid_name}" maxlength="12"
+        name="mid_name" id="mid_name"></td></tr>
+        <tr><rd><input type="text" required="required" value="${phone}" maxlength="12"
+        name="phone" id="phone"></td></tr>
+      `);
+    document.getElementById("changeIngener").innerHTML = html;
+};
+function saveChangeIngener(el) {
+    const id = el.id.value;
+    const firstName = el.first_name.value;
+    const lastName = el.last_name.value;
+    const midName = el.mid_name.value;
+    const phone = el.phone.value;
+
+
+    let ingener = {
+        first_name: firstName,
+        last_name: lastName,
+        midl_name: midName,
+        phone: phone
+    };
+
+    sendRequest('PUT', "/api/masters/" + id, body = ingener)
+        .then(data => { console.log(data) 
+            readInginer();
+        
+        });
+
+
+    return false;
 };
 
