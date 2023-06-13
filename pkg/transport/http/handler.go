@@ -27,8 +27,10 @@ func StartHandler(db *sql.DB, log *logrus.Logger) {
 	r.HandleFunc("/order/status", t.statusOrderPage)
 	r.HandleFunc("/order/change", t.makeChangesOrder)
 	r.HandleFunc("/order", t.ordersPage)
+	r.HandleFunc("/inginer", t.inginerPage)
 	r.HandleFunc("/parts", t.parts)
 	r.HandleFunc("/works", t.works)
+	r.HandleFunc("/employees", t.employeesPage)
 
 	r.HandleFunc("/api/count", countAPI.GetCount).Methods("get")                                  //колличество заказов
 	r.HandleFunc("/api/users", userAPI.GetUsers).Methods("GET")                                   //json список клиентов
@@ -59,7 +61,7 @@ func StartHandler(db *sql.DB, log *logrus.Logger) {
 	r.HandleFunc("/api/works", workAPI.GetWorks).Methods("GET")                                   //json список работ
 	r.HandleFunc("/api/works", workAPI.PostWork).Methods("POST")                                  //json новая работа
 	r.HandleFunc("/api/works/{id:[0-9]+}", workAPI.PutWork).Methods("PUT")                        //json изменить работу
-	r.HandleFunc("/api/works/{id:[0-9]+}", workAPI.DeleteWork).Methods("DELETE")                  // json удалить работу
+	r.HandleFunc("/api/works/{id:[0-9]+}", workAPI.DeleteWork).Methods("DELETE")                  //json удалить работу
 	r.HandleFunc("/api/orderparts/{id:[0-9]+}", orderAPI.GetOrderParts).Methods("GET")            //json запчасти в заказе
 	r.HandleFunc("/api/orderparts", orderAPI.PostOrderParts).Methods("POST")                      //json добавить запчасти к заказу
 	r.HandleFunc("/api/orderparts/{id:[0-9]+}", orderAPI.DeleteOrderParts).Methods("DELETE")      //json удалить запчасть с заказа

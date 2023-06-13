@@ -1,0 +1,83 @@
+{{ define "createInginer" }}
+{{ template "header" }}
+<div class="container" id="createUser">
+    <div class="row row-cols-auto">
+        <div class="col">
+            <table>
+                <tbody>
+                    <form onsubmit="return newIngenerForm(this)" method="post">
+                        <tr>
+                            <th colspan="2" style="text-align: center;"><label>Добавить нового мастера</label></th>
+                        </tr>
+                        <tr>
+                            <td><label>Фамилия Мстера</label></td>
+                            <td><input type="text" size="15" placeholder="Фамилия" id="IngenerFirstName"> </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="IngenerFirstNameErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td><label>Имя Мстера</label></td>
+                            <td><input type="text" size="15" placeholder="Имя" id="IngenerLastName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="IngenerLastNameErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td><label>Отчество Мстера</label></td>
+                            <td><input type="text" size="15" placeholder="Отчество" id="IngenerMidlName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="IngenerMidlNameErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td><label>Номер телефона</label></td>
+                            <td><input type="text" size="15" placeholder="Телефон" id="PhoneNomber">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><sup style="color: red;" id="PhoneNomberErr"> </sup></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" type="reset">Сброс</button>
+                                <button class="btn btn-primary btn-sm" type="submit">Сохранить</button>
+                            </td>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Мастера</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Фамилия</th>
+                        <th scope="col">Имя</th>
+                        <th scope="col">Отчество</th>
+                        <th scope="col">Телефон</th>
+                    </tr>
+                </thead>
+                <tbody id="inginers">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script  src="/static/js/inginer.js"> </script> 
+
+{{ template "footer" }}
+
+{{ end }}

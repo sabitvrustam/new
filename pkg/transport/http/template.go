@@ -12,9 +12,11 @@ type Templates struct {
 	CteateOrder     *template.Template
 	OrderStatus     *template.Template
 	MakeOrderChange *template.Template
+	CreateInginer   *template.Template
 	Parts           *template.Template
 	Works           *template.Template
 	Orders          *template.Template
+	Employees       *template.Template
 	log             *logrus.Logger
 }
 
@@ -45,6 +47,11 @@ func NewTemplates(log *logrus.Logger) (t Templates) {
 	if err != nil {
 		t.log.Error(err, "не удалось открыть страничку изменения заказа")
 	}
+	tpl, err = template.ParseFiles("web/html/header.html", "web/html/inginer.html", "web/html/footer.html")
+	t.CreateInginer = tpl
+	if err != nil {
+		t.log.Error(err, "не удалось открыть страничку изменения заказа")
+	}
 	tpl, err = template.ParseFiles("web/html/header.html", "web/html/parts.html", "web/html/footer.html")
 	t.Parts = tpl
 	if err != nil {
@@ -54,6 +61,12 @@ func NewTemplates(log *logrus.Logger) (t Templates) {
 	t.Works = tpl
 	if err != nil {
 		t.log.Error(err, "не удалось открыть страничку с работами")
+	}
+
+	tpl, err = template.ParseFiles("web/html/header.html", "web/html/employees.html", "web/html/footer.html")
+	t.Employees = tpl
+	if err != nil {
+		t.log.Error(err, "не удалось открыть страничку с сотрудниками")
 	}
 
 	return t
@@ -93,6 +106,13 @@ func (t *Templates) makeChangesOrder(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (t *Templates) inginerPage(w http.ResponseWriter, r *http.Request) {
+	err := t.CreateInginer.ExecuteTemplate(w, "createInginer", nil)
+	if err != nil {
+		t.log.Error(err)
+	}
+}
+
 func (t *Templates) parts(w http.ResponseWriter, r *http.Request) {
 	err := t.Parts.ExecuteTemplate(w, "parts", nil)
 	if err != nil {
@@ -102,6 +122,13 @@ func (t *Templates) parts(w http.ResponseWriter, r *http.Request) {
 
 func (t *Templates) works(w http.ResponseWriter, r *http.Request) {
 	err := t.Works.ExecuteTemplate(w, "works", nil)
+	if err != nil {
+		t.log.Error(err)
+	}
+}
+
+func (t *Templates) employeesPage(w http.ResponseWriter, r *http.Request) {
+	err := t.Employees.ExecuteTemplate(w, "employees", nil)
 	if err != nil {
 		t.log.Error(err)
 	}

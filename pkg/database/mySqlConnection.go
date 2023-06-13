@@ -12,7 +12,7 @@ func MySqlConnect(log *logrus.Logger) (db *sql.DB, err error) {
 
 	var dbuser string = os.Getenv("bduser")
 	var dbpass string = os.Getenv("bdpass")
-	var pass string = fmt.Sprintf("%s:%s@tcp(185.68.93.47:3306)/my_service", dbuser, dbpass)
+	var pass string = fmt.Sprintf("%s:%s@tcp(localhost:3306)/my_service", dbuser, dbpass)
 	db, err = sql.Open("mysql", pass)
 	if err != nil {
 		log.Error("не удалось подключиться к базе данных", err)
